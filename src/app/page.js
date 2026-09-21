@@ -23,7 +23,7 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const [gallery, testimonials, settings] = await Promise.all([
     getPublicGallery({ limit: 20 }),
-    getPublicTestimonials({ featured: true, limit: 3 }),
+    getPublicTestimonials({ limit: 12 }),
     getBusinessSettings(),
   ]);
   const emergencyAvailable = settings.emergency_service_available ?? business.emergencyServiceAvailable;

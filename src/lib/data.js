@@ -1,5 +1,6 @@
 import "server-only";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/adminAuthorization";
 import { LEAD_STATUSES } from "@/data/adminOptions";
 
 export { LEAD_STATUSES, GALLERY_CATEGORIES, TESTIMONIAL_SOURCES } from "@/data/adminOptions";
@@ -12,6 +13,7 @@ export async function getPublicGallery({ featured = false, limit = 24 } = {}) {
     .select("id, public_url, alt_text, caption, category, service_slug, featured, sort_order, before_after_group, before_after_role")
     .eq("published", true)
     .is("archived_at", null)
+    .order("featured", { ascending: false })
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false })
     .limit(limit);
@@ -28,6 +30,7 @@ export async function getPublicTestimonials({ featured = false, limit = 6 } = {}
     .select("id, customer_name, testimonial_text, source, source_url, rating, featured, sort_order")
     .eq("published", true)
     .is("archived_at", null)
+    .order("featured", { ascending: false })
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false })
     .limit(limit);
@@ -48,6 +51,7 @@ export async function getBusinessSettings() {
 }
 
 export async function getDashboardData() {
+  await requireAdmin();
   const client = createServiceClient();
   if (!client) return null;
   const [leadsResult, galleryResult, testimonialResult] = await Promise.all([
@@ -70,6 +74,7 @@ export async function getDashboardData() {
 }
 
 export async function getAdminLeads({ search = "", status = "", service = "" } = {}) {
+  await requireAdmin();
   const client = createServiceClient();
   if (!client) return [];
   let query = client.from("leads").select("id, reference, created_at, first_name, last_name, phone, email, property_address, city, services, urgency, status").order("created_at", { ascending: false }).limit(200);
@@ -84,6 +89,7 @@ export async function getAdminLeads({ search = "", status = "", service = "" } =
 }
 
 export async function getAdminLead(id) {
+  await requireAdmin();
   const client = createServiceClient();
   if (!client) return null;
   const { data } = await client.from("leads").select("*").eq("id", id).maybeSingle();
@@ -96,6 +102,7 @@ export async function getAdminLead(id) {
 }
 
 export async function getAdminGallery() {
+  await requireAdmin();
   const client = createServiceClient();
   if (!client) return [];
   const { data } = await client.from("gallery_items").select("*").is("archived_at", null).order("sort_order", { ascending: true }).order("created_at", { ascending: false });
@@ -103,6 +110,7 @@ export async function getAdminGallery() {
 }
 
 export async function getAdminTestimonials() {
+  await requireAdmin();
   const client = createServiceClient();
   if (!client) return [];
   const { data } = await client.from("testimonials").select("*").is("archived_at", null).order("sort_order", { ascending: true }).order("created_at", { ascending: false });

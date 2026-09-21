@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const empty = { customerName: "", testimonialText: "", source: "Direct Customer", sourceUrl: "", rating: "", featured: false, published: false, sortOrder: 0 };
@@ -14,7 +14,45 @@ export default function TestimonialsManager({ initialItems }) {
 }
 
 function TestimonialForm({ values, change, onSubmit, submitLabel, disabled, showRemove, onRemove }) {
-  return <form className="admin-form" onSubmit={onSubmit}><div className="form-grid"><div className="field"><label>Displayed customer name <span>*</span></label><input value={values.customerName} onChange={(event) => change("customerName", event.target.value)} required /></div><div className="field"><label>Source</label><select value={values.source} onChange={(event) => change("source", event.target.value)}>{sources.map((source) => <option key={source}>{source}</option>)}</select></div><div className="field full"><label>Testimonial <span>*</span></label><textarea rows="5" value={values.testimonialText} onChange={(event) => change("testimonialText", event.target.value)} required /></div><div className="field"><label>Source link</label><input type="url" value={values.sourceUrl} onChange={(event) => change("sourceUrl", event.target.value)} placeholder="https://" /></div><div className="field"><label>Rating, if supplied</label><select value={values.rating} onChange={(event) => change("rating", event.target.value)}><option value="">No rating</option>{[5,4,3,2,1].map((rating) => <option key={rating} value={rating}>{rating} star{rating === 1 ? "" : "s"}</option>)}</select></div><div className="field"><label>Display order</label><input type="number" value={values.sortOrder} onChange={(event) => change("sortOrder", event.target.value)} /></div></div><div className="toggle-row"><label><input type="checkbox" checked={values.featured} onChange={(event) => change("featured", event.target.checked)} /> Feature on homepage</label><label><input type="checkbox" checked={values.published} onChange={(event) => change("published", event.target.checked)} /> Published</label></div><div className="admin-item-actions"><button className="button button-dark" type="submit" disabled={disabled}>{submitLabel}</button>{showRemove && <button className="button button-danger" type="button" onClick={onRemove}>Archive</button>}</div></form>;
+  const formId = useId();
+  return (
+    <form className="admin-form" onSubmit={onSubmit}>
+      <div className="form-grid">
+        <div className="field">
+          <label htmlFor={`${formId}-customer-name`}>Displayed customer name <span>*</span></label>
+          <input id={`${formId}-customer-name`} value={values.customerName} onChange={(event) => change("customerName", event.target.value)} required />
+        </div>
+        <div className="field">
+          <label htmlFor={`${formId}-source`}>Source</label>
+          <select id={`${formId}-source`} value={values.source} onChange={(event) => change("source", event.target.value)}>{sources.map((source) => <option key={source}>{source}</option>)}</select>
+        </div>
+        <div className="field full">
+          <label htmlFor={`${formId}-text`}>Testimonial <span>*</span></label>
+          <textarea id={`${formId}-text`} rows="5" value={values.testimonialText} onChange={(event) => change("testimonialText", event.target.value)} required />
+        </div>
+        <div className="field">
+          <label htmlFor={`${formId}-source-url`}>Source link</label>
+          <input id={`${formId}-source-url`} type="url" value={values.sourceUrl} onChange={(event) => change("sourceUrl", event.target.value)} placeholder="https://" />
+        </div>
+        <div className="field">
+          <label htmlFor={`${formId}-rating`}>Rating, if supplied</label>
+          <select id={`${formId}-rating`} value={values.rating} onChange={(event) => change("rating", event.target.value)}><option value="">No rating</option>{[5,4,3,2,1].map((rating) => <option key={rating} value={rating}>{rating} star{rating === 1 ? "" : "s"}</option>)}</select>
+        </div>
+        <div className="field">
+          <label htmlFor={`${formId}-sort-order`}>Display order</label>
+          <input id={`${formId}-sort-order`} type="number" value={values.sortOrder} onChange={(event) => change("sortOrder", event.target.value)} />
+        </div>
+      </div>
+      <div className="toggle-row">
+        <label htmlFor={`${formId}-featured`}><input id={`${formId}-featured`} type="checkbox" checked={values.featured} onChange={(event) => change("featured", event.target.checked)} /> Feature on homepage</label>
+        <label htmlFor={`${formId}-published`}><input id={`${formId}-published`} type="checkbox" checked={values.published} onChange={(event) => change("published", event.target.checked)} /> Published</label>
+      </div>
+      <div className="admin-item-actions">
+        <button className="button button-dark" type="submit" disabled={disabled}>{submitLabel}</button>
+        {showRemove && <button className="button button-danger" type="button" onClick={onRemove}>Archive</button>}
+      </div>
+    </form>
+  );
 }
 
 function TestimonialItem({ item, router }) {
@@ -24,4 +62,3 @@ function TestimonialItem({ item, router }) {
   const remove = async () => { if (!window.confirm("Archive this testimonial? It will immediately disappear from the public site.")) return; const response = await fetch(`/api/admin/testimonials/${item.id}`, { method: "DELETE" }); if (response.ok) router.refresh(); else setState("error"); };
   return <section className="admin-card testimonial-admin-item"><TestimonialForm values={values} change={change} onSubmit={save} submitLabel={state === "saving" ? "Saving…" : state === "saved" ? "Saved" : "Save changes"} disabled={state === "saving"} showRemove onRemove={remove} />{state === "error" && <span className="field-error">The change could not be saved.</span>}</section>;
 }
-

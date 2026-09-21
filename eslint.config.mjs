@@ -7,5 +7,5 @@ export default defineConfig([
     linterOptions: { reportUnusedDisableDirectives: false },
     rules: { "@next/next/no-img-element": "off" },
   },
-  globalIgnores([".next/**", "node_modules/**", "coverage/**"]),
+  globalIgnores([".next/**", "node_modules/**", "coverage/**", "artifacts/**"]),
 ]);

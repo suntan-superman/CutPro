@@ -3,7 +3,7 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import sharp from "sharp";
 import { createServiceClient } from "@/lib/supabase/server";
-import { hasValidImageSignature, validatePhoto } from "@/lib/validation";
+import { processPhotoInput, readValidatedPhoto } from "@/lib/uploadValidation";
 
 const extensionForType = {
   "image/jpeg": "jpg",
@@ -20,22 +20,17 @@ export async function uploadLeadPhotos(leadId, files) {
 
   try {
     for (const file of files) {
-      const validationError = validatePhoto(file);
-      if (validationError) throw new Error(validationError);
-      const buffer = Buffer.from(await file.arrayBuffer());
-      if (!hasValidImageSignature(buffer, file.type)) {
-        throw new Error("A photo's contents did not match its file type.");
-      }
+      const buffer = await readValidatedPhoto(file);
 
       let storedBuffer = buffer;
       let storedType = file.type;
       let extension = extensionForType[file.type];
       if (["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-        storedBuffer = await sharp(buffer)
+        storedBuffer = await processPhotoInput(() => sharp(buffer)
           .rotate()
           .resize({ width: 2000, height: 2000, fit: "inside", withoutEnlargement: true })
           .webp({ quality: 82 })
-          .toBuffer();
+          .toBuffer());
         storedType = "image/webp";
         extension = "webp";
       }
@@ -66,18 +61,13 @@ export async function uploadLeadPhotos(leadId, files) {
 export async function uploadGalleryPhoto(file) {
   const client = createServiceClient();
   if (!client) throw new Error("Storage is not configured.");
-  const validationError = validatePhoto(file, { gallery: true });
-  if (validationError) throw new Error(validationError);
-  const buffer = Buffer.from(await file.arrayBuffer());
-  if (!hasValidImageSignature(buffer, file.type)) {
-    throw new Error("The photo's contents did not match its file type.");
-  }
+  const buffer = await readValidatedPhoto(file, { gallery: true });
 
-  const storedBuffer = await sharp(buffer)
+  const storedBuffer = await processPhotoInput(() => sharp(buffer)
     .rotate()
     .resize({ width: 2200, height: 2200, fit: "inside", withoutEnlargement: true })
     .webp({ quality: 84 })
-    .toBuffer();
+    .toBuffer());
   const storagePath = `${new Date().getUTCFullYear()}/${randomUUID()}.webp`;
   const { error } = await client.storage
     .from("gallery-media")

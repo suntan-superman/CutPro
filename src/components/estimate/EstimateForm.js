@@ -8,6 +8,7 @@ import { estimateServiceOptions } from "@/data/services";
 import { ArrowIcon, CheckIcon, PhoneIcon } from "@/components/ui/Icons";
 import TurnstileWidget from "@/components/forms/TurnstileWidget";
 import { trackEvent } from "@/lib/analytics";
+import useObjectUrls from "@/hooks/useObjectUrls";
 
 const steps = ["Service", "Job", "Photos", "Contact", "Review"];
 const urgencyOptions = ["Flexible", "Within a week", "As soon as possible", "Emergency"];
@@ -40,6 +41,7 @@ export default function EstimateForm() {
       : [],
   }));
   const [photos, setPhotos] = useState([]);
+  const { createObjectUrl, revokeObjectUrl, clearObjectUrls } = useObjectUrls();
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle");
   const [serverMessage, setServerMessage] = useState("");
@@ -53,8 +55,6 @@ export default function EstimateForm() {
   }, []);
 
   const handleTurnstileToken = useCallback((token) => setTurnstileToken(token), []);
-
-  useEffect(() => () => photos.forEach((photo) => photo.preview && URL.revokeObjectURL(photo.preview)), [photos]);
 
   const updateField = (event) => {
     const { name, value } = event.target;
@@ -104,7 +104,7 @@ export default function EstimateForm() {
       const extension = file.name.split(".").pop()?.toLowerCase();
       if (!acceptedTypes.includes(file.type) || !["jpg", "jpeg", "png", "webp", "heic", "heif"].includes(extension)) rejected.push(`${file.name}: unsupported image type`);
       else if (file.size > maxFileSize) rejected.push(`${file.name}: larger than 8 MB`);
-      else accepted.push({ file, preview: ["image/heic", "image/heif"].includes(file.type) ? null : URL.createObjectURL(file) });
+      else accepted.push({ file, preview: ["image/heic", "image/heif"].includes(file.type) ? null : createObjectUrl(file) });
     }
     if (selected.length > remaining) rejected.push(`Only ${maxFiles} photos can be added.`);
     setPhotos((current) => [...current, ...accepted]);
@@ -113,11 +113,8 @@ export default function EstimateForm() {
   };
 
   const removePhoto = (index) => {
-    setPhotos((current) => {
-      const removed = current[index];
-      if (removed.preview) URL.revokeObjectURL(removed.preview);
-      return current.filter((_, itemIndex) => itemIndex !== index);
-    });
+    revokeObjectUrl(photos[index]?.preview);
+    setPhotos((current) => current.filter((_, itemIndex) => itemIndex !== index));
   };
 
   const submit = async () => {
@@ -138,6 +135,8 @@ export default function EstimateForm() {
       setReference(result.reference);
       setServerMessage(result.photoWarning ? "Your request was saved, but one or more photos could not be attached. CutPro can still follow up with you." : "Your request and available photos were saved.");
       setStatus("success");
+      clearObjectUrls();
+      setPhotos([]);
       trackEvent("estimate_submit", { lead_reference: result.reference });
     } catch (error) {
       setStatus("error");

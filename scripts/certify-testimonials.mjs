@@ -8,7 +8,7 @@ import { createClient } from "@supabase/supabase-js";
 // Writes occur only through Admin UI; database access below is read-only and scoped
 // to this run's unmistakably synthetic content. Never log session/credential data.
 nextEnv.loadEnvConfig(process.cwd(), true, { info() {}, error() {} });
-const origin = "http://127.0.0.1:3000";
+const origin = process.env.CUTPRO_QA_ORIGIN || "http://127.0.0.1:3000";
 const runId = process.env.TESTIMONIAL_QA_RUN || String(Date.now());
 const prefix = `CUTPRO QA TESTIMONIAL ${runId}`;
 const client = createClient(
@@ -79,7 +79,7 @@ async function archive(name, confirm = true) {
 }
 
 try {
-  const browser = await chromium.connectOverCDP("http://127.0.0.1:9235");
+  const browser = await chromium.connectOverCDP(process.env.CUTPRO_QA_CDP || "http://127.0.0.1:9235");
   const ownerContext = browser.contexts()[0];
   isolatedContext = await chromium.launchPersistentContext(fileURLToPath(new URL(`../artifacts/testimonial-browser-${runId}/`, import.meta.url)), { channel: "chrome", headless: true });
   await isolatedContext.addCookies(await ownerContext.cookies(origin));

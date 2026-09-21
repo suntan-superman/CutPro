@@ -14,7 +14,7 @@ export async function POST(request) {
     if (!(await verifyTurnstile(input.turnstileToken, ip))) return NextResponse.json({ message: "Please complete the anti-spam check." }, { status: 400 });
     const validation = validateContact(input);
     if (!validation.valid) return NextResponse.json({ message: "Review the highlighted information.", errors: validation.errors }, { status: 422 });
-    const result = await createLead(validation.data, [], "contact");
+    const result = await createLead(validation.data, "contact");
     return NextResponse.json({ ok: true, reference: result.lead.reference, duplicate: result.duplicate });
   } catch (error) {
     const setupError = error.message?.includes("not configured");

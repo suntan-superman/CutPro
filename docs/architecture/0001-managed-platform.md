@@ -1,6 +1,6 @@
 # ADR 0001: Managed application platform
 
-Status: Accepted and implemented. Local Supabase/Admin/media/lead workflows are certified. Existing Netlify environment and deployed upload certification are pending; the platform request-size constraint must be resolved without creating another site or backend provider.
+Status: Accepted and implemented. The original local Supabase/Admin workflows were certified. The direct-upload revision is described in [ADR 0002](0002-direct-storage-uploads.md); its live Supabase and existing-Netlify certification are separate release gates.
 
 ## Decision
 

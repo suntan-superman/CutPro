@@ -34,10 +34,11 @@ export async function createSessionClient() {
   });
 }
 
-export function createServiceClient() {
+export function createServiceClient({ timeoutMs } = {}) {
   if (!hasServerSupabaseConfig()) return null;
   const { url, secretKey } = getSupabaseConfig();
   return createClient(url, secretKey, {
     auth: { autoRefreshToken: false, persistSession: false },
+    ...(timeoutMs ? { global: { fetch: (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(timeoutMs) }) } } : {}),
   });
 }

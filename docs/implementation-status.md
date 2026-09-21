@@ -52,7 +52,7 @@ Updated: September 21, 2026
 - Spoofed or undecodable image inputs now return sanitized 422 validation errors after successful rollback, rather than generic 500 errors. Genuine database/storage/operational failures remain server errors.
 - Published nonfeatured testimonials now appear on the homepage instead of being silently excluded.
 - `npm run qa:browser` opens a separate local Chrome profile for the operator to sign in directly, enabling actual UI-driven certification without sharing the password.
-- Deployment blocker identified from code plus official Netlify limits, not a live failure: original multi-photo FormData requests may exceed Netlify's 6 MB buffered request limit (approximately 4.5 MB for binary payloads). Existing controls permit 8 MiB per file and 32 MiB combined for estimates. Server-side image processing happens too late to reduce the incoming request. Resolve the transmitted-byte budget or upload workflow and test the existing deployment before claiming large-photo upload certification. See [Netlify function limits](https://docs.netlify.com/build/functions/configuration/).
+- Direct-storage upload architecture implemented locally: CutPro routes accept only bounded JSON, authenticated Gallery drafts use private `gallery-staging`, estimate drafts use private `lead-photos`, Supabase grants are exact-path and non-upsert, stored objects are independently checked, gallery output is trusted Sharp-normalized WebP, estimate originals remain private, and finalization is atomic/idempotent. The old Netlify multipart-size blocker is avoided rather than weakened. Live migration and existing-Netlify browser certification remain release gates.
 
 ## Remaining launch dependencies
 

@@ -1,7 +1,6 @@
 import "server-only";
 import { randomBytes } from "node:crypto";
 import { createServiceClient } from "@/lib/supabase/server";
-import { uploadLeadPhotos } from "@/lib/uploads";
 import { sendLeadNotifications } from "@/lib/notifications";
 
 function leadReference() {
@@ -9,7 +8,9 @@ function leadReference() {
   return `CP-${date}-${randomBytes(3).toString("hex").toUpperCase()}`;
 }
 
-export async function createLead(data, files = [], source = "estimate") {
+// Contact messages have no attachments. Estimates use the atomic upload-session
+// finalizer instead, so no browser image bytes can enter this legacy adapter.
+export async function createLead(data, source = "contact") {
   const client = createServiceClient();
   if (!client) throw new Error("Lead storage is not configured yet.");
   const record = {
@@ -38,26 +39,6 @@ export async function createLead(data, files = [], source = "estimate") {
     if (existing) return { lead: existing, duplicate: true, notification: null };
   }
   if (error || !lead) throw new Error("Your request could not be saved.");
-
-  let photoReferences = [];
-  if (files.length) {
-    try {
-      photoReferences = await uploadLeadPhotos(lead.id, files);
-      const { error: updateError } = await client
-        .from("leads")
-        .update({ photo_references: photoReferences })
-        .eq("id", lead.id);
-      if (updateError) {
-        await client.storage
-          .from("lead-photos")
-          .remove(photoReferences.map((photo) => photo.path));
-        throw new Error("The photos could not be attached to the saved request.");
-      }
-      lead.photo_references = photoReferences;
-    } catch (uploadError) {
-      lead.uploadWarning = uploadError.message;
-    }
-  }
 
   let notification;
   try {

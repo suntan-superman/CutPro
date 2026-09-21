@@ -26,7 +26,7 @@ With the local app listening on `127.0.0.1:3000`, run `npm run qa:browser` to op
 
 ## Storage and retention
 
-- `lead-photos` is private. The admin lead view generates short-lived signed links.
+- `lead-photos` is private. Estimate files are uploaded through exact-path, submission-bound Supabase grants and the admin lead view generates short-lived signed download links.
 - `gallery-media` is public because its content is intended for the website. Unpublished rows are not rendered publicly, but a known object URL remains readable while the object exists. Draft status is not a privacy boundary: never put private customer material into this bucket.
 - Standard photo formats are resized and converted to WebP on the server. HEIC/HEIF estimate photos remain in their original private format when a reliable web conversion cannot be guaranteed.
 - Leads are closed with `won` or `lost`; the UI does not expose permanent deletion.
@@ -38,10 +38,10 @@ Choose a written customer-data retention window before production. Delete expire
 
 1. Obtain CutPro's permission to publish the photographs; remove private details and confirm ownership. Use JPG, PNG, or WebP for Gallery (HEIC/HEIF are accepted only for private estimate attachments).
 2. Sign in at `/admin/login`, open Gallery, and select up to six photos. Check every preview, enter a useful photo description/caption, and choose category/service. Leave Publish now off while reviewing. Do not copy files into `/public` or edit source code.
-3. Upload through the form. Review each library card; multi-upload descriptions include file-name suffixes and can be edited individually. Save descriptive text, Featured/Published state, and Display order. Featured items sort ahead of other published items; lower Display order values sort first within that priority.
+3. Upload through the form. The browser sends image bytes directly to the private Supabase staging bucket; CutPro receives only small JSON authorization/verification requests. Review each library card; multi-upload descriptions include file-name suffixes and can be edited individually. Save descriptive text, Featured/Published state, and Display order. Featured items sort ahead of other published items; lower Display order values sort first within that priority.
 4. For a Before/After pair, give both cards the same Pair name and set one Before and the other After. Publish both; feature them if they should be prioritized on the homepage. A complete pair appears in the homepage presentation.
 5. Refresh the public Gallery/homepage to verify the result without a source edit or rebuild. Unpublishing removes site presentation but does not make a public object URL private. Delete requires confirmation and archives/unpublishes the row while removing its storage object.
-6. Before the first real batch on Netlify, resolve and verify its request-size constraint. Current original-photo multipart batches may exceed the platform limit even though localhost accepts them. Until that is certified, do not promise the full 8 MB/file allowance on the deployed site.
+6. Before the first real batch on Netlify, verify the direct-storage flow with realistically large phone photos. The app routes exchange only bounded JSON; image bytes go browser-to-Supabase, so the old Netlify multipart limit is not used. Do not skip the deployed timing, authorization, private-access, or cleanup checks.
 
 ## Testimonial workflow
 
@@ -54,6 +54,10 @@ Open Estimate leads; search by reference, name, phone, email, or address, and us
 The retained certification record is **Workside QA**, reference **CP-20260921-5F7A0C**, explicitly marked **CUTPRO ADMIN CERTIFICATION TEST — NOT A CUSTOMER LEAD**. It has two private photos and ends in Won after all statuses were tested. Do not contact it or delete it as part of routine QA cleanup. Gallery test objects were deleted and their rows archived; testimonial test rows are archived/unpublished. No genuine customer/source content was removed.
 
 ## Repeating the live checks
+
+### Direct-storage cleanup
+
+Run `npm run uploads:cleanup` first (dry-run). Use `npm run uploads:cleanup -- --execute` only from the existing deployment/operator environment after reviewing counts. The scheduled `cleanup-uploads` Netlify function runs hourly and removes only ledger-owned temporary paths after the signed-grant retention window. It never enumerates a bucket or deletes a lead/gallery destination protected by a completed result. A cleanup failure leaves the ledger retryable; investigate a repeated backlog before adding customer data.
 
 Run these only deliberately, with the correct CutPro `.env.local` and a signed-in `npm run qa:browser` session:
 

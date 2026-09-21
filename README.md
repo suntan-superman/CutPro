@@ -45,7 +45,7 @@ insert into public.admin_users (user_id, display_name)
 values ('AUTH-USER-UUID', 'CutPro Administrator');
 ```
 
-6. Confirm `lead-photos` is private and `gallery-media` is public, each with an 8 MB object limit. All table RLS is enabled with no browser-access policies: the server uses the secret key and checks authorization before admin operations. Browser storage-write policies are not needed for the existing server-upload design.
+6. Run the additive `supabase/migrations/20260921_direct_uploads.sql` in SQL Editor for direct uploads. Keep `lead-photos` private and `gallery-media` public; the migration adds private `gallery-staging`. All three buckets enforce 8 MiB per object. Upload ledgers and budget counters have RLS with no browser policies; only server-role code can issue narrowly scoped upload grants. Do not add anonymous Storage write policies.
 7. Complete local login, authorization, gallery, testimonial, and estimate tests before updating the existing Netlify environment/deployment. Configure Auth Site URL and allowed redirect URLs for the existing deployed origin when certifying it; do not change DNS.
 
 Admin users sign in at `/admin/login`. There is no public registration route.
@@ -54,9 +54,11 @@ The app also accepts legacy `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVIC
 
 ## Photo handling
 
-Estimate requests accept up to six JPG, PNG, WebP, HEIC, or HEIF files, with an 8 MB limit per file and a 32 MB combined limit. The server validates the declared MIME type, extension, and file signature. JPG/PNG/WebP uploads are autorotated, resized to a maximum 2,000-pixel edge, converted to WebP, and stripped of normal image metadata before private storage. HEIC/HEIF files are signature-checked and preserved privately because codec support varies by deployment; the form shows a file card instead of promising an unreliable browser preview.
+Estimate requests accept up to six JPG, PNG, WebP, HEIC, or HEIF files, with an 8 MiB limit per file (48 MiB maximum batch). Browser image bytes go directly to private Supabase Storage. CutPro receives only bounded JSON metadata and issues exact-path signed upload grants after creating an ownership-protected draft. Each stored file is size/signature checked; JPG/PNG/WebP must also decode successfully. HEIC/HEIF receive container checks and remain private without promising unsupported codec conversion. Private originals, including their metadata, are retained; do not assume estimate-photo EXIF is stripped.
 
-Gallery uploads accept JPG, PNG, and WebP, then normalize them to metadata-stripped WebP with a maximum 2,200-pixel edge before public storage. Database rows contain only metadata and object references, never image binaries.
+Gallery uploads accept up to six JPG, PNG, or WebP files, each up to 8 MiB. Every authorization, verification, and finalization request checks the admin session and allowlist. Originals upload to private quarantine, never directly to the public bucket. A small per-file verification request makes the server fetch one bounded stored object and use Sharp to produce metadata-stripped WebP with a maximum 2,200-pixel edge before public storage. No incoming Netlify request contains an image. This retains a trusted processing boundary without another image service. Gallery rows and estimate leads are finalized atomically only after all files pass.
+
+Signed upload grants expire after Supabase's fixed two hours; application drafts accept finalization for 30 minutes. Hourly cleanup waits at least 130 minutes before removing abandoned objects or completed sessions' temporary originals. See [direct-upload architecture](docs/architecture/0002-direct-storage-uploads.md) and the operations guide for lifecycle, recovery, and rollout requirements.
 
 ## Email setup
 
@@ -72,7 +74,7 @@ npm run build
 
 `npm run check` runs all three checks. Live UI certification helpers are opt-in and are not part of ordinary unit tests. Start the local server, run `npm run qa:browser`, and sign in directly in that window. The scripts in `scripts/certify-*.mjs` use unmistakably synthetic content, verify real Supabase persistence, and must never be pointed at another customer's project. See the operations guide for cleanup and the retained QA lead.
 
-The configured per-photo limits are currently **local application limits**, not certified Netlify upload limits. Original multipart photo batches can exceed Netlify's request-size cap before server image processing starts. Resolve this before deployed large-photo certification; do not assume a successful localhost upload proves the existing Netlify deployment accepts the same batch.
+The old multipart upload routes are replaced with JSON-only endpoints capped at 64 KiB. Direct storage avoids Netlify's buffered request-body limit without increasing platform limits or reducing the six-photo allowance. Unit/SQL checks are not a substitute for live Supabase and existing-Netlify browser certification; complete those before declaring the deployed workflow certified.
 
 ## Deployment
 

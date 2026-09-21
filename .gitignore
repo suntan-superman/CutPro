@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Next.js output
+.next/
+out/
+
+# Local environment and credentials
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Hosting and tooling
+.netlify/
+.vercel/
+coverage/
+artifacts/
+*.log
+.DS_Store
+Thumbs.db
+
+# Local Supabase state
+.supabase/

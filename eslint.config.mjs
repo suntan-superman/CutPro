@@ -1,0 +1,11 @@
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+
+export default defineConfig([
+  ...nextVitals,
+  {
+    linterOptions: { reportUnusedDisableDirectives: false },
+    rules: { "@next/next/no-img-element": "off" },
+  },
+  globalIgnores([".next/**", "node_modules/**", "coverage/**"]),
+]);

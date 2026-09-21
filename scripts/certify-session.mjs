@@ -39,7 +39,7 @@ async function saveSettings(settings) {
 }
 
 try {
-  assert.equal(process.env.NEXT_PUBLIC_SUPABASE_URL, "https://wvkihitkavgzgxthzunt.supabase.co");
+  assert.ok(/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(process.env.NEXT_PUBLIC_SUPABASE_URL || ""));
   server = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
   const browser = await chromium.connectOverCDP("http://127.0.0.1:9235");
   const owner = browser.contexts()[0];

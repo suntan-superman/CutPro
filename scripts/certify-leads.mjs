@@ -30,7 +30,7 @@ function observe(page) {
 }
 
 try {
-  assert.equal(projectUrl, "https://wvkihitkavgzgxthzunt.supabase.co");
+  assert.ok(/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(projectUrl || ""));
   assert.ok(!process.env.RESEND_API_KEY, "QA assumes email delivery is unconfigured");
   const options = { auth: { persistSession: false, autoRefreshToken: false } };
   const server = createClient(projectUrl, process.env.SUPABASE_SECRET_KEY, options);

@@ -37,7 +37,7 @@ Copy `.env.example` to `.env.local` only if the local file does not already exis
 1. Use the existing CutPro project, `wvkihitkavgzgxthzunt`; do not create a replacement project.
 2. For initial installation, run the entire `supabase/schema.sql` in SQL Editor. This creates the five tables, constraints, indexes, timestamp triggers, RLS configuration, and both storage buckets. It has already been installed in the existing project; do not manually duplicate those resources.
 3. Under Authentication > Sign In / Providers, disable public sign-ups and anonymous sign-ins, and keep the Email provider enabled.
-4. Under Settings > API Keys, copy the publishable and secret keys directly into the corresponding `.env.local` entries above. The project URL is `https://wvkihitkavgzgxthzunt.supabase.co`. Restart the local server after environment changes. No passwords or API keys belong in chat or tracked files.
+4. Under Settings > API Keys, copy the publishable and secret keys directly into the corresponding `.env.local` entries above. The existing project reference is `wvkihitkavgzgxthzunt`; copy its URL from the dashboard into `.env.local` rather than recording the environment value in source. Restart the local server after environment changes. No passwords or API keys belong in chat or tracked files.
 5. Create only the authorized initial administrator under Authentication > Users > Add user > Create new user. Use their own email and a unique password stored in their password manager. Enable Auto Confirm User for this explicitly provisioned account; do not disable email confirmation project-wide. Add that Auth user's UUID to `public.admin_users`:
 
 ```sql

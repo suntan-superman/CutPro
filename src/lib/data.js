@@ -5,7 +5,7 @@ import { LEAD_STATUSES } from "@/data/adminOptions";
 
 export { LEAD_STATUSES, GALLERY_CATEGORIES, TESTIMONIAL_SOURCES } from "@/data/adminOptions";
 
-export async function getPublicGallery({ featured = false, limit = 24 } = {}) {
+export async function getPublicGallery({ featured = false, limit = 24, serviceSlug = "" } = {}) {
   const client = createServiceClient();
   if (!client) return [];
   let query = client
@@ -18,6 +18,7 @@ export async function getPublicGallery({ featured = false, limit = 24 } = {}) {
     .order("created_at", { ascending: false })
     .limit(limit);
   if (featured) query = query.eq("featured", true);
+  if (serviceSlug) query = query.eq("service_slug", serviceSlug);
   const { data, error } = await query;
   return error ? [] : data;
 }

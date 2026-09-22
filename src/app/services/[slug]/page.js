@@ -8,6 +8,9 @@ import { CheckIcon, PhoneIcon } from "@/components/ui/Icons";
 import JsonLd from "@/components/ui/JsonLd";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import CallToAction from "@/components/ui/CallToAction";
+import { getPublicGallery } from "@/lib/data";
+
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return services.map(({ slug }) => ({ slug }));
@@ -28,6 +31,7 @@ export default async function ServicePage({ params }) {
   const { slug } = await params;
   const service = getService(slug);
   if (!service) notFound();
+  const photos = await getPublicGallery({ serviceSlug: service.slug, limit: 6 });
   const related = services.filter((item) => item.slug !== slug).slice(0, 3);
   const serviceSchema = {
     "@context": "https://schema.org",
@@ -50,7 +54,7 @@ export default async function ServicePage({ params }) {
             <p className="eyebrow">{service.eyebrow}</p><h1>{service.name} in Bakersfield</h1><p>{service.shortDescription}</p>
             <div className="hero-actions"><Link className="button button-primary" href={`/free-estimate?service=${service.slug}`}>Request this service</Link><a className="button button-outline" href={business.phoneHref} data-phone-cta><PhoneIcon className="size-5" /> Call CutPro</a></div>
           </div>
-          <MediaPlaceholder label={`${service.name} project photo pending`} />
+          {photos.length ? <div className="service-photo-stack">{photos.slice(0, 2).map((item) => <figure className="service-photo" key={item.id}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src={item.public_url} alt={item.alt_text} />{item.caption && <figcaption>{item.caption}</figcaption>}</figure>)}</div> : <MediaPlaceholder label={`${service.name} project photo pending`} />}
         </div>
       </header>
       <section className="section"><div className="shell grid-two service-detail"><div><p className="eyebrow">The service</p><h2>A site-specific conversation.</h2><p className="large-copy">{service.description}</p></div><div><h3>Common reasons to call</h3><ul className="check-list">{service.reasons.map((item) => <li key={item}><CheckIcon className="size-5" />{item}</li>)}</ul></div></div></section>
@@ -61,4 +65,3 @@ export default async function ServicePage({ params }) {
     </>
   );
 }
-

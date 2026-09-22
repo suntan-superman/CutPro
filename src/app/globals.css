@@ -157,12 +157,13 @@ img { max-width: 100%; height: auto; }
 .work-grid-copy p:not(.eyebrow) { color: var(--muted); }
 
 .service-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
-.service-card { position: relative; min-height: 345px; padding: 39px; overflow: hidden; border: 1px solid var(--line); border-radius: 7px; background: var(--paper); }
+.service-card { position: relative; min-height: 345px; padding: 39px 39px 105px; overflow: hidden; border: 1px solid var(--line); border-radius: 7px; background: var(--paper); }
 .service-card::before { content: ""; position: absolute; right: -120px; bottom: -160px; width: 300px; height: 300px; border-radius: 50%; background: color-mix(in srgb, var(--accent) 14%, transparent); }
 .service-lime { --accent: var(--leaf-500); }.service-orange { --accent: var(--orange); }.service-sand { --accent: var(--sand); }.service-red { --accent: var(--red); }
 .service-number { display: block; margin-bottom: 40px; color: var(--accent, var(--leaf-500)); font-family: Georgia, serif; font-size: 1rem; font-weight: 700; }
 .service-card h3, .service-row h2 { margin: 0 0 14px; color: var(--forest-950); font-family: Georgia, serif; font-size: clamp(2rem, 4vw, 3rem); line-height: 1; }
 .service-card > p:not(.eyebrow) { max-width: 500px; color: var(--muted); }
+.service-card h3 + p { margin-bottom: 0; }
 .service-links { position: absolute; left: 39px; right: 39px; bottom: 30px; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .service-links > a:last-child { display: grid; width: 44px; height: 44px; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--forest-800); }
 .large-copy { color: var(--forest-800); font-family: Georgia, serif; font-size: clamp(1.35rem, 3vw, 2rem); line-height: 1.35; }

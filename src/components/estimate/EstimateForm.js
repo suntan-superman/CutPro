@@ -10,6 +10,7 @@ import TurnstileWidget from "@/components/forms/TurnstileWidget";
 import { trackEvent } from "@/lib/analytics";
 import useObjectUrls from "@/hooks/useObjectUrls";
 import { createDirectUploadDraft, submitDirectUpload, validateDirectUploadFiles } from "@/lib/directUploadClient";
+import { formatPhoneInput } from "@/lib/phone";
 
 const steps = ["Service", "Job", "Photos", "Contact", "Review"];
 const urgencyOptions = ["Flexible", "Within a week", "As soon as possible", "Emergency"];
@@ -75,7 +76,7 @@ export default function EstimateForm() {
     if (locked) return;
     const { name, value } = event.target;
     invalidateDraft();
-    setFields((current) => ({ ...current, [name]: value }));
+    setFields((current) => ({ ...current, [name]: name === "phone" ? formatPhoneInput(value) : value }));
     setErrors((current) => ({ ...current, [name]: undefined }));
   };
 

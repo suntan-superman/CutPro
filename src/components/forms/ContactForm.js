@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import TurnstileWidget from "@/components/forms/TurnstileWidget";
 import { CheckIcon } from "@/components/ui/Icons";
 import { trackEvent } from "@/lib/analytics";
+import { formatPhoneInput } from "@/lib/phone";
 
 export default function ContactForm() {
   const [fields, setFields] = useState({ firstName: "", lastName: "", phone: "", email: "", message: "", website: "" });
@@ -15,7 +16,7 @@ export default function ContactForm() {
   const [errors, setErrors] = useState({});
 
   const setToken = useCallback((token) => setTurnstileToken(token), []);
-  const change = (event) => { setFields((current) => ({ ...current, [event.target.name]: event.target.value })); setErrors((current) => ({ ...current, [event.target.name]: undefined })); };
+  const change = (event) => { const { name, value } = event.target; setFields((current) => ({ ...current, [name]: name === "phone" ? formatPhoneInput(value) : value })); setErrors((current) => ({ ...current, [name]: undefined })); };
 
   const submit = async (event) => {
     event.preventDefault(); setStatus("submitting"); setMessage("");

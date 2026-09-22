@@ -2,6 +2,14 @@
 -- No existing customer records, bucket visibility, or Storage policies change.
 begin;
 
+-- The team image is an explicit gallery role, separate from homepage
+-- featuring and service association. Keep at most one active team photo.
+alter table public.gallery_items
+  add column if not exists team_photo boolean not null default false;
+create unique index if not exists gallery_one_team_photo_idx
+  on public.gallery_items (team_photo)
+  where team_photo = true and archived_at is null;
+
 create table if not exists public.upload_sessions (
   id uuid primary key,
   purpose text not null check (purpose in ('gallery', 'estimate')),
@@ -218,12 +226,13 @@ begin
     with inserted as (
       insert into public.gallery_items (
         storage_path, public_url, alt_text, caption, category, service_slug,
-        featured, published, sort_order, before_after_group, before_after_role
+        featured, published, team_photo, sort_order, before_after_group, before_after_role
       )
       select item->>'storage_path', item->>'public_url', item->>'alt_text',
         coalesce(item->>'caption', ''), coalesce(item->>'category', 'Other'),
         item->>'service_slug', coalesce((item->>'featured')::boolean, false),
         coalesce((item->>'published')::boolean, false),
+        coalesce((item->>'team_photo')::boolean, false),
         coalesce((item->>'sort_order')::integer, 0),
         item->>'before_after_group', item->>'before_after_role'
       from jsonb_array_elements(p_gallery) as item

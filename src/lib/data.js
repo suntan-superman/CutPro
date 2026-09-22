@@ -5,12 +5,12 @@ import { LEAD_STATUSES } from "@/data/adminOptions";
 
 export { LEAD_STATUSES, GALLERY_CATEGORIES, TESTIMONIAL_SOURCES } from "@/data/adminOptions";
 
-export async function getPublicGallery({ featured = false, limit = 24, serviceSlug = "" } = {}) {
+export async function getPublicGallery({ featured = false, teamPhoto = false, limit = 24, serviceSlug = "" } = {}) {
   const client = createServiceClient();
   if (!client) return [];
   let query = client
     .from("gallery_items")
-    .select("id, public_url, alt_text, caption, category, service_slug, featured, sort_order, before_after_group, before_after_role")
+    .select("id, public_url, alt_text, caption, category, service_slug, featured, team_photo, sort_order, before_after_group, before_after_role")
     .eq("published", true)
     .is("archived_at", null)
     .order("featured", { ascending: false })
@@ -18,6 +18,7 @@ export async function getPublicGallery({ featured = false, limit = 24, serviceSl
     .order("created_at", { ascending: false })
     .limit(limit);
   if (featured) query = query.eq("featured", true);
+  if (teamPhoto) query = query.eq("team_photo", true);
   if (serviceSlug) query = query.eq("service_slug", serviceSlug);
   const { data, error } = await query;
   return error ? [] : data;

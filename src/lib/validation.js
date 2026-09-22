@@ -123,6 +123,7 @@ export function validateGalleryMetadata(input) {
     service_slug: cleanText(input.serviceSlug, 80) || null,
     featured: Boolean(input.featured),
     published: Boolean(input.published),
+    team_photo: Boolean(input.teamPhoto),
     sort_order: Number.isFinite(Number(input.sortOrder)) ? Number(input.sortOrder) : 0,
     before_after_group: cleanText(input.beforeAfterGroup, 80) || null,
     before_after_role: ["before", "after"].includes(input.beforeAfterRole) ? input.beforeAfterRole : null,

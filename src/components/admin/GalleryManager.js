@@ -11,7 +11,7 @@ const services = [["", "None"], ["tree-removal", "Tree Removal"], ["tree-trimmin
 export default function GalleryManager({ initialItems }) {
   const router = useRouter();
   const [previews, setPreviews] = useState([]);
-  const [upload, setUpload] = useState({ altText: "", caption: "", category: "Other", serviceSlug: "", featured: false, published: false });
+  const [upload, setUpload] = useState({ altText: "", caption: "", category: "Other", serviceSlug: "", featured: false, published: false, teamPhoto: false });
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [finalizing, setFinalizing] = useState(false);
@@ -41,7 +41,7 @@ export default function GalleryManager({ initialItems }) {
     try {
       uploadDraft.current ||= createDirectUploadDraft({ kind: "gallery", files: previews.map(({ file }) => file), metadata: upload });
       const result = await submitDirectUpload(uploadDraft.current, { onProgress: setMessage, onFinalizing: () => setFinalizing(true) });
-      setMessage(`${result.count} photo${result.count === 1 ? "" : "s"} added.`); clearObjectUrls(); setPreviews([]); setUpload({ altText: "", caption: "", category: "Other", serviceSlug: "", featured: false, published: false }); uploadDraft.current = null; setFinalizing(false); form.reset(); router.refresh();
+      setMessage(`${result.count} photo${result.count === 1 ? "" : "s"} added.`); clearObjectUrls(); setPreviews([]); setUpload({ altText: "", caption: "", category: "Other", serviceSlug: "", featured: false, published: false, teamPhoto: false }); uploadDraft.current = null; setFinalizing(false); form.reset(); router.refresh();
     }
     catch (error) {
       if (error.status === 410) { uploadDraft.current = null; setFinalizing(false); }
@@ -62,7 +62,7 @@ export default function GalleryManager({ initialItems }) {
           <div className="field"><label htmlFor="newCategory">Category</label><select id="newCategory" value={upload.category} disabled={locked} onChange={(event) => changeUpload("category", event.target.value)}>{categories.map((value) => <option key={value}>{value}</option>)}</select></div>
           <div className="field"><label htmlFor="newService">Related service</label><select id="newService" value={upload.serviceSlug} disabled={locked} onChange={(event) => changeUpload("serviceSlug", event.target.value)}>{services.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>
         </div>
-        <div className="toggle-row"><label><input type="checkbox" checked={upload.featured} disabled={locked} onChange={(event) => changeUpload("featured", event.target.checked)} /> Feature on homepage</label><label><input type="checkbox" checked={upload.published} disabled={locked} onChange={(event) => changeUpload("published", event.target.checked)} /> Publish now</label></div>
+        <div className="toggle-row"><label><input type="checkbox" checked={upload.featured} disabled={locked} onChange={(event) => changeUpload("featured", event.target.checked)} /> Feature on homepage</label><label><input type="checkbox" checked={upload.published} disabled={locked} onChange={(event) => changeUpload("published", event.target.checked)} /> Publish now</label><label><input type="checkbox" checked={upload.teamPhoto} disabled={locked} onChange={(event) => changeUpload("teamPhoto", event.target.checked)} /> Use as team photo</label></div>
         {message && <div className="admin-feedback" role="status" aria-live="polite">{message}</div>}
         {finalizing && !busy && <p>Retry this upload to confirm whether it was saved. Its photos and details are kept unchanged to prevent duplicates.</p>}
         <button className="button button-dark" type="submit" disabled={busy || !previews.length}>{busy ? "Uploading…" : "Upload photos"}</button>
@@ -74,7 +74,7 @@ export default function GalleryManager({ initialItems }) {
 }
 
 function GalleryItem({ item, router }) {
-  const [values, setValues] = useState({ altText: item.alt_text, caption: item.caption || "", category: item.category, serviceSlug: item.service_slug || "", featured: item.featured, published: item.published, sortOrder: item.sort_order, beforeAfterGroup: item.before_after_group || "", beforeAfterRole: item.before_after_role || "" });
+  const [values, setValues] = useState({ altText: item.alt_text, caption: item.caption || "", category: item.category, serviceSlug: item.service_slug || "", featured: item.featured, published: item.published, teamPhoto: item.team_photo, sortOrder: item.sort_order, beforeAfterGroup: item.before_after_group || "", beforeAfterRole: item.before_after_role || "" });
   const [state, setState] = useState("idle");
   const save = async () => { setState("saving"); const response = await fetch(`/api/admin/gallery/${item.id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(values) }); setState(response.ok ? "saved" : "error"); if (response.ok) router.refresh(); };
   const remove = async () => { if (!window.confirm("Remove this photo from the gallery? This also removes the stored image and cannot be undone.")) return; setState("saving"); const response = await fetch(`/api/admin/gallery/${item.id}`, { method: "DELETE" }); if (response.ok) router.refresh(); else setState("error"); };
@@ -92,7 +92,7 @@ function GalleryItem({ item, router }) {
         <div className="field"><label htmlFor={fieldId("beforeAfterGroup")}>Pair name</label><input id={fieldId("beforeAfterGroup")} value={values.beforeAfterGroup} onChange={(event) => change("beforeAfterGroup", event.target.value)} placeholder="Example: Oak removal 1" /></div>
         <div className="field"><label htmlFor={fieldId("beforeAfterRole")}>Pair position</label><select id={fieldId("beforeAfterRole")} value={values.beforeAfterRole} onChange={(event) => change("beforeAfterRole", event.target.value)}><option value="">Not paired</option><option value="before">Before</option><option value="after">After</option></select></div>
       </div>
-      <div className="toggle-row"><label><input type="checkbox" checked={values.featured} onChange={(event) => change("featured", event.target.checked)} /> Featured</label><label><input type="checkbox" checked={values.published} onChange={(event) => change("published", event.target.checked)} /> Published</label></div>
+      <div className="toggle-row"><label><input type="checkbox" checked={values.featured} onChange={(event) => change("featured", event.target.checked)} /> Featured</label><label><input type="checkbox" checked={values.published} onChange={(event) => change("published", event.target.checked)} /> Published</label><label><input type="checkbox" checked={values.teamPhoto} onChange={(event) => change("teamPhoto", event.target.checked)} /> Team photo</label></div>
       <div className="admin-item-actions"><button className="button button-dark" type="button" onClick={save} disabled={state === "saving"}>{state === "saving" ? "Saving…" : state === "saved" ? "Saved" : "Save"}</button><button className="button button-danger" type="button" onClick={remove}>Delete</button></div>
       {state === "error" && <span className="field-error">The change could not be completed.</span>}
     </div>

@@ -28,6 +28,7 @@ export default async function HomePage() {
   ]);
   const emergencyAvailable = settings.emergency_service_available ?? business.emergencyServiceAvailable;
   const featuredGallery = gallery.filter((item) => item.featured);
+  const primaryPhoto = featuredGallery[0] || null;
   const homeGallery = (featuredGallery.length ? featuredGallery : gallery).slice(0, 3);
   const groupedPairs = gallery.reduce((groups, item) => {
     if (!item.before_after_group || !item.before_after_role) return groups;
@@ -56,7 +57,7 @@ export default async function HomePage() {
             <p className="hero-note">Send photos from your phone to help explain the job.</p>
           </div>
           <div className="hero-visual">
-            <MediaPlaceholder label="CutPro project photo pending" />
+            {primaryPhoto ? <figure className="hero-photo">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={primaryPhoto.public_url} alt={primaryPhoto.alt_text} /><figcaption>{primaryPhoto.caption || primaryPhoto.category}</figcaption></figure> : <MediaPlaceholder label="CutPro project photo pending" />}
             <div className="hero-badge"><strong>4</strong><span>core tree<br />services</span></div>
           </div>
         </div>

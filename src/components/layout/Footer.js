@@ -27,7 +27,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="shell footer-credits" aria-label="Website credits">
-        <p className="footer-credit-primary">Brought to you by <strong>GNZ Marketing, LLC</strong></p>
+        <p className="footer-credit-primary">Brought to you by <a href="https://gnzmarketing.netlify.app/" target="_blank" rel="noopener noreferrer" aria-label="GNZ Marketing, LLC website (opens in a new tab)"><strong>GNZ Marketing, LLC</strong></a></p>
         <p className="footer-credit-secondary">Powered by Workside Software, LLC.</p>
       </div>
       <div className="shell footer-bottom">

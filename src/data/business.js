@@ -1,8 +1,8 @@
 export const business = {
   name: "CUTPRO Tree Service",
   shortName: "CUTPRO",
-  phoneDisplay: "661-343-7663",
-  phoneHref: "tel:+16613437663",
+  phoneDisplay: process.env.NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY || "661-343-7663",
+  phoneHref: `tel:${(process.env.NEXT_PUBLIC_BUSINESS_PHONE || "+16613437663").replace(/[^\d+]/g, "")}`,
   email: null,
   canonicalUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   tagline: "Professional Tree Care in Bakersfield & Surrounding Areas",
@@ -28,4 +28,3 @@ export const primaryNavigation = [
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
-

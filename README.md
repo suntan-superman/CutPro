@@ -26,11 +26,14 @@ Keep an existing `.env.local`; do not overwrite saved credentials with the templ
 Copy `.env.example` to `.env.local` only if the local file does not already exist, and populate it locally. Never commit `.env.local`. `.env.example` is deliberately tracked and must contain no actual credentials. `git check-ignore -v -- .env.local` confirms the local file is ignored. Never print credential files or include them in screenshots/logs; the app does not require the database password.
 
 - `NEXT_PUBLIC_SITE_URL`: canonical public origin
+- `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY`, `NEXT_PUBLIC_BUSINESS_PHONE`: public display and dialable phone values; set both when the answering number changes
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: Supabase project URL and browser-safe publishable key
 - `SUPABASE_SECRET_KEY`: server-only database/storage secret key (never expose it in client code)
 - `RESEND_API_KEY`, `LEAD_NOTIFICATION_EMAIL`, `EMAIL_FROM`: transactional email configuration
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID`: optional GA4 measurement ID
 - `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`: optional Cloudflare Turnstile protection; configure both together
+
+The owner portal's **Business settings** page includes administrator access management. Adding an administrator sends an invitation through Supabase Auth and activates that identity for the portal; deactivation removes portal access while retaining the Auth identity for possible later reactivation.
 
 ## Supabase setup
 

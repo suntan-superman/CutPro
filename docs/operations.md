@@ -12,7 +12,11 @@ For the initial administrator, use Authentication > Users > Add user > Create ne
 
 Provision Gabe later only after explicit approval using the same two-part process, with his own identity and credentials; do not share the initial administrator's account. Removing an individual's `admin_users` row removes application-level access on subsequent protected requests even if the login account still exists. Previously issued private-photo signed URLs remain valid until their 15-minute expiry.
 
+Authorized administrators can now use **Business settings → Administrator access** to invite another administrator by email or deactivate an existing portal account. Deactivation removes the `admin_users` authorization row; it does not delete the Supabase Auth identity. The interface prevents an administrator from deactivating themselves or the last active administrator.
+
 The local app uses `.env.local`, which is Git-ignored. The tracked `.env.example` is a blank template, not a credential store. Use `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and the server-only `SUPABASE_SECRET_KEY` from Supabase Settings > API Keys. A database password is not required. After configuration changes, restart the server. Resend is optional for Admin and lead-persistence certification.
+
+The public phone number is configured with `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY` and `NEXT_PUBLIC_BUSINESS_PHONE`. Update both values in the existing Netlify site's environment variables and redeploy when the answering service changes.
 
 ## Current certification checkpoint
 

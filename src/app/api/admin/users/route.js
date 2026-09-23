@@ -47,7 +47,7 @@ export async function POST(request) {
     let user = (userPage.users || []).find((item) => item.email?.toLowerCase() === email);
     if (user && (existingProfiles || []).some((profile) => profile.user_id === user.id)) return NextResponse.json({ message: "That user is already an active administrator." }, { status: 409 });
     if (!user) {
-      const invited = await client.auth.admin.inviteUserByEmail(email, { redirectTo: `${business.canonicalUrl}/admin/login` });
+      const invited = await client.auth.admin.inviteUserByEmail(email, { redirectTo: `${business.canonicalUrl}/auth/callback` });
       if (invited.error || !invited.data.user) return NextResponse.json({ message: "The invitation could not be sent. Verify the email provider is configured." }, { status: 422 });
       user = invited.data.user;
     }

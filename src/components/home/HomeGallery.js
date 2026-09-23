@@ -19,11 +19,10 @@ export default function HomeGallery({ items }) {
           ))}
       <div className="work-grid-copy">
         <p className="eyebrow">Real work. Real results.</p>
-        <h2>See the work before you make the call.</h2>
-        <p>CutPro&apos;s project gallery is managed by the team. Authentic, customer-approved job photos will appear here as they are published.</p>
+        <h2>Our Work</h2>
+        <p>{visibleItems.length ? "Take a look at CUTPRO tree service projects throughout Bakersfield and surrounding areas. See the care that goes into each property before you make the call." : "Tree trimming, removals, stump grinding, and emergency tree service for Bakersfield properties. Project photos are coming soon."}</p>
         <Link href="/gallery" className="text-link">Explore the gallery →</Link>
       </div>
     </div>
   );
 }
-

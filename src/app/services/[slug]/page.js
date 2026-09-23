@@ -39,7 +39,7 @@ export default async function ServicePage({ params }) {
     name: service.name,
     description: service.shortDescription,
     url: absoluteUrl(`/services/${slug}`),
-    provider: { "@type": "ProfessionalService", name: business.name, telephone: business.phoneDisplay },
+    provider: { "@type": "ProfessionalService", name: business.name, ...(business.phoneE164 ? { telephone: business.phoneE164 } : {}) },
     areaServed: "Bakersfield, California",
   };
   return (

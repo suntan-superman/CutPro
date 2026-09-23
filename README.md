@@ -26,7 +26,8 @@ Keep an existing `.env.local`; do not overwrite saved credentials with the templ
 Copy `.env.example` to `.env.local` only if the local file does not already exist, and populate it locally. Never commit `.env.local`. `.env.example` is deliberately tracked and must contain no actual credentials. `git check-ignore -v -- .env.local` confirms the local file is ignored. Never print credential files or include them in screenshots/logs; the app does not require the database password.
 
 - `NEXT_PUBLIC_SITE_URL`: canonical public origin
-- `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY`, `NEXT_PUBLIC_BUSINESS_PHONE`: public display and dialable phone values; set both when the answering number changes
+- `NEXT_PUBLIC_BUSINESS_PHONE`: single source for the public phone display, call links, customer email phone CTA, and structured data. US input is shown as `(XXX) XXX-XXXX` and dialed as `tel:+1XXXXXXXXXX`. Change this variable and rebuild/redeploy when the answering number changes.
+- `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY`: legacy fallback only when `NEXT_PUBLIC_BUSINESS_PHONE` is empty; it no longer independently overrides the visible number. Unrecognized formats retain their configured text.
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: Supabase project URL and browser-safe publishable key
 - `SUPABASE_SECRET_KEY`: server-only database/storage secret key (never expose it in client code)
 - `RESEND_API_KEY`, `LEAD_NOTIFICATION_EMAIL`, `EMAIL_FROM`: transactional email configuration
@@ -36,6 +37,8 @@ Copy `.env.example` to `.env.local` only if the local file does not already exis
 The owner portal's **Business settings** page includes administrator access management. Adding an administrator sends an invitation through Supabase Auth and activates that identity for the portal; deactivation removes portal access while retaining the Auth identity for possible later reactivation.
 
 ## Supabase setup
+
+Company/About editing uses the existing Supabase project. Run `supabase/migrations/20260922_company_content.sql` after the base schema; it adds one protected singleton table without replacing content. The public About page uses the confirmed default copy if that table is empty or unavailable. In Admin, open **Company / About**, edit the plain-text fields, and save. Changes appear on the About page without a deployment; the optional preview is local until saved. See `docs/content-refinement-20260922.md` for implementation and QA details.
 
 1. Use the existing CutPro project, `wvkihitkavgzgxthzunt`; do not create a replacement project.
 2. For initial installation, run the entire `supabase/schema.sql` in SQL Editor. This creates the five tables, constraints, indexes, timestamp triggers, RLS configuration, and both storage buckets. It has already been installed in the existing project; do not manually duplicate those resources.

@@ -2,6 +2,11 @@ import "server-only";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/adminAuthorization";
 import { LEAD_STATUSES } from "@/data/adminOptions";
+import { readCompanyContent } from "@/lib/companyContent";
+
+export async function getCompanyContent() {
+  return (await readCompanyContent(createServiceClient({ timeoutMs: 5000 }))).content;
+}
 
 export { LEAD_STATUSES, GALLERY_CATEGORIES, TESTIMONIAL_SOURCES } from "@/data/adminOptions";
 

@@ -16,7 +16,15 @@ Authorized administrators can now use **Business settings → Administrator acce
 
 The local app uses `.env.local`, which is Git-ignored. The tracked `.env.example` is a blank template, not a credential store. Use `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and the server-only `SUPABASE_SECRET_KEY` from Supabase Settings > API Keys. A database password is not required. After configuration changes, restart the server. Resend is optional for Admin and lead-persistence certification.
 
-The public phone number is configured with `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY` and `NEXT_PUBLIC_BUSINESS_PHONE`. Update both values in the existing Netlify site's environment variables and redeploy when the answering service changes.
+The public phone number is configured with `NEXT_PUBLIC_BUSINESS_PHONE`. Both human-readable `(XXX) XXX-XXXX` text and `tel:+1XXXXXXXXXX` links are generated from that same value. Set it in Netlify's production Build and Functions scopes, then redeploy when the answering service changes. `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY` is retained only as a fallback if the primary variable is empty, preventing mismatched display/call numbers. JSON-LD uses E.164. The formatter does not modify Merxus routing configuration.
+
+## Company / About content
+
+Open **Company / About** in the admin navigation. Edit Company name, Years / experience display, About heading, four paragraphs, and the local section heading/paragraph. All fields are plain text with length limits. Save shows confirmation and the latest saved time. The optional preview shows current edits. These fields control the About page; the global CUTPRO logo/name remains unchanged. The existing Gallery team's photo selection still controls the About photo.
+
+The migration `supabase/migrations/20260922_company_content.sql` creates `public.company_content`, one row with `id = 'primary'`, JSON content, server timestamp `updated_at`, and `updated_by` from the authenticated administrator. It is rerunnable and does not seed/overwrite existing content. RLS and revoked browser grants prevent direct reads/writes; the authorized server route is `/api/admin/company`. Public About reads project only content/timestamp and render escaped text. No HTML or scripts can be authored through the editor.
+
+An empty table supplies the approved initial copy from `src/data/companyContent.js`; the first save persists it. A missing table, network failure, or invalid content also falls back publicly, but the editor reports the load failure and blocks saving until it can read reliably. Failed saves preserve edits for retry. The editor shows unsaved status; navigating away without saving discards edits, matching the existing admin pattern. Content changes need no Netlify deployment.
 
 ## Current certification checkpoint
 

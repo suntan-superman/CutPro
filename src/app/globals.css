@@ -130,6 +130,7 @@ img { max-width: 100%; height: auto; }
 .hero::before { content: ""; position: absolute; top: -45%; left: -10%; width: 720px; height: 720px; border-radius: 50%; border: 1px solid rgba(173,213,89,.13); box-shadow: 0 0 0 100px rgba(173,213,89,.025), 0 0 0 200px rgba(173,213,89,.018); }
 .hero-grid { position: relative; display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(45px, 7vw, 100px); align-items: center; }
 .hero h1, .service-hero h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(3.35rem, 7vw, 6.8rem); font-weight: 700; line-height: .94; letter-spacing: -.055em; }
+.hero h1 { font-size: clamp(2.8rem, 5.7vw, 5.4rem); line-height: 1.02; letter-spacing: -.045em; }
 .hero-lead { max-width: 680px; margin: 26px 0; color: #ccdad1; font-size: 1.12rem; }
 .hero-actions, .inline-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 13px; }
 .hero-note { color: #90aa9a; font-size: .8rem; }
@@ -140,6 +141,17 @@ img { max-width: 100%; height: auto; }
 .about-team-photo { position: relative; overflow: hidden; min-height: 380px; margin: 0; border-radius: 7px; background: var(--forest-800); }
 .about-team-photo img { display: block; width: 100%; height: 100%; min-height: 380px; object-fit: cover; }
 .about-team-photo figcaption { position: absolute; right: 0; bottom: 0; left: 0; padding: 42px 18px 16px; color: white; background: linear-gradient(transparent, rgba(9,30,22,.82)); }
+.about-story { align-items: start; }
+.company-copy { overflow-wrap: anywhere; }
+.about-paragraphs { max-width: 65ch; }
+.about-paragraphs p { margin: 0 0 1.3em; white-space: pre-line; }
+.about-paragraphs p:first-child { font-size: 1.15rem; color: var(--forest-900); }
+.company-editor fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.company-editor .field { margin-bottom: 20px; min-width: 0; }
+.company-editor textarea { resize: vertical; }
+.company-save-status { color: var(--muted); font-size: .85rem; }
+.company-preview summary { cursor: pointer; font-weight: 750; }
+.company-preview p { max-width: 70ch; white-space: pre-line; }
 .hero-visual .media-placeholder { min-height: 540px; border-radius: 46% 46% 8px 8px; }
 .hero-badge { position: absolute; right: -20px; bottom: 34px; z-index: 9; display: flex; align-items: center; gap: 10px; min-width: 155px; padding: 15px 18px; border: 1px solid rgba(255,255,255,.26); background: rgba(12,38,29,.91); backdrop-filter: blur(10px); }
 .hero-badge strong { color: var(--leaf-400); font-family: Georgia, serif; font-size: 2.4rem; line-height: 1; }
@@ -382,7 +394,7 @@ fieldset { margin: 26px 0; padding: 0; border: 0; }
   .media-placeholder { min-height: 330px; }
   .hero { padding: 58px 0; }
   .hero-grid { grid-template-columns: 1fr; }
-  .hero h1 { font-size: clamp(3.2rem, 16vw, 5.2rem); }
+  .hero h1 { font-size: clamp(2.8rem, 11.5vw, 4.5rem); }
   .hero-visual .media-placeholder { min-height: 400px; }
   .hero-badge { right: 12px; }
   .trust-strip .shell { width: 100%; grid-template-columns: 1fr 1fr; }

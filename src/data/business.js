@@ -1,13 +1,18 @@
+import { getBusinessPhone } from "../lib/phone.js";
+
+const configuredPhone = process.env.NEXT_PUBLIC_BUSINESS_PHONE?.trim()
+  || process.env.NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY?.trim()
+  || "+16613437663";
+
 export const business = {
   name: "CUTPRO Tree Service",
   shortName: "CUTPRO",
-  phoneDisplay: process.env.NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY || "661-343-7663",
-  phoneHref: `tel:${(process.env.NEXT_PUBLIC_BUSINESS_PHONE || "+16613437663").replace(/[^\d+]/g, "")}`,
+  ...getBusinessPhone(configuredPhone),
   email: null,
   canonicalUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   tagline: "Professional Tree Care in Bakersfield & Surrounding Areas",
   summary:
-    "Tree trimming, tree removal, stump grinding, and urgent tree-service help for Bakersfield property owners.",
+    "CUTPRO Tree Service provides tree trimming, tree removal, stump grinding, and emergency tree service in Bakersfield and surrounding areas.",
   primaryCity: "Bakersfield",
   region: "CA",
   areaServed: ["Bakersfield", "Kern County"],

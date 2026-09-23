@@ -41,7 +41,7 @@ export function localBusinessJsonLd(settings = {}) {
     "@type": "ProfessionalService",
     name: business.name,
     url: business.canonicalUrl,
-    telephone: business.phoneDisplay,
+    ...(business.phoneE164 ? { telephone: business.phoneE164 } : {}),
     description: business.summary,
     areaServed: business.areaServed.map((name) => ({
       "@type": "AdministrativeArea",

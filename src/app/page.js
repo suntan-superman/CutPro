@@ -48,8 +48,8 @@ export default async function HomePage() {
         <div className="shell hero-grid">
           <div className="hero-copy">
             <p className="eyebrow">Bakersfield tree service</p>
-            <h1>Tree work, handled with a clear plan.</h1>
-            <p className="hero-lead">Trimming, removal, stump grinding, and urgent tree-service help for properties in Bakersfield and surrounding areas.</p>
+            <h1>Professional Tree Service in Bakersfield</h1>
+            <p className="hero-lead">Tree trimming, removal, stump grinding, and emergency tree service for homes and businesses throughout Bakersfield and surrounding areas.</p>
             <div className="hero-actions">
               <Link className="button button-primary" href="/free-estimate">Get a Free Estimate <ArrowIcon className="size-5" /></Link>
               <a className="button button-ghost" href={business.phoneHref} data-phone-cta><PhoneIcon className="size-5" /> {business.phoneDisplay}</a>
@@ -115,7 +115,7 @@ export default async function HomePage() {
 
       <section className="section section-dark">
         <div className="shell">
-          <SectionHeading eyebrow="Before & after" title="The difference is in the finished space." copy="Approved before-and-after pairs can be published from the owner portal without a new deployment." />
+          <SectionHeading eyebrow="Before & after" title="See the Difference Professional Tree Work Can Make" copy={beforeAfterPair ? "See how tree work can transform a property. Explore CUTPRO project photos from the Bakersfield area, with care and cleanup at the heart of each job." : "From careful trimming to tree removal and cleanup, our work is focused on leaving each property safer, cleaner, and looking its best. Before-and-after project photos are coming soon."} />
           <div className="before-after-grid">
             <div><span>Before</span>{beforeAfterPair?.before ? <figure>{/* eslint-disable-next-line @next/next/no-img-element */}<img src={beforeAfterPair.before.public_url} alt={beforeAfterPair.before.alt_text} /></figure> : <MediaPlaceholder label="Before photo pending" compact />}</div>
             <div><span>After</span>{beforeAfterPair?.after ? <figure>{/* eslint-disable-next-line @next/next/no-img-element */}<img src={beforeAfterPair.after.public_url} alt={beforeAfterPair.after.alt_text} /></figure> : <MediaPlaceholder label="After photo pending" compact />}</div>

@@ -26,6 +26,10 @@ export default function Footer() {
           <Link href="/free-estimate" className="text-link">Request an estimate →</Link>
         </div>
       </div>
+      <div className="shell footer-credits" aria-label="Website credits">
+        <p className="footer-credit-primary">Brought to you by <strong>GNZ Marketing, LLC</strong></p>
+        <p className="footer-credit-secondary">Powered by Workside Software, LLC.</p>
+      </div>
       <div className="shell footer-bottom">
         <p>© {new Date().getFullYear()} {business.name}. All rights reserved.</p>
         <div><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/admin/login">Admin</Link></div>
@@ -33,4 +37,3 @@ export default function Footer() {
     </footer>
   );
 }
-

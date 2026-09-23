@@ -205,11 +205,14 @@ img { max-width: 100%; height: auto; }
 .testimonial-card blockquote { margin: 20px 0 28px; font-family: Georgia, serif; font-size: 1.24rem; line-height: 1.45; }
 .testimonial-card figcaption { display: flex; flex-direction: column; font-size: .8rem; }
 .testimonial-card figcaption span, .testimonial-card figcaption a { color: var(--muted); }
-.area-map { position: relative; min-height: 380px; overflow: hidden; border-radius: 50% 50% 7px 7px; background-color: #e8e5d8; background-image: linear-gradient(30deg, rgba(18,55,42,.08) 12%, transparent 12.5%, transparent 87%, rgba(18,55,42,.08) 87.5%), linear-gradient(150deg, rgba(18,55,42,.08) 12%, transparent 12.5%, transparent 87%, rgba(18,55,42,.08) 87.5%); background-size: 70px 120px; }
-.map-road { position: absolute; width: 130%; height: 20px; border: 3px solid white; border-width: 3px 0; background: #cbbf9d; transform-origin: center; }
-.road-one { top: 48%; left: -15%; transform: rotate(16deg); }.road-two { top: 39%; left: -10%; transform: rotate(-28deg); }
-.map-ring { position: absolute; left: 50%; top: 50%; display: grid; width: 145px; height: 145px; place-items: center; border: 2px solid var(--forest-700); border-radius: 50%; background: rgba(173,213,89,.78); transform: translate(-50%, -50%); box-shadow: 0 0 0 23px rgba(146,189,64,.16), 0 0 0 48px rgba(146,189,64,.08); }
-.map-ring span { font-size: .8rem; font-weight: 900; text-transform: uppercase; }
+.service-area-map { min-width: 0; margin: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #fffefa; box-shadow: 0 12px 36px rgba(18,55,42,.07); }
+.service-area-map-image { position: relative; background: #eeeee4; }
+.service-area-map-image img { display: block; width: 100%; height: auto; }
+.service-area-map-credit { position: absolute; right: 0; bottom: 0; padding: 3px 8px; background: rgba(255,254,250,.95); color: #29483a; font-size: .65rem; text-decoration: underline; }
+.service-area-map figcaption { display: grid; gap: 7px; padding: 20px 24px; }
+.service-area-map figcaption strong { color: var(--forest-700); font-size: 1rem; }
+.service-area-map figcaption > span { color: var(--muted); font-size: .82rem; line-height: 1.6; }
+.service-area-map figcaption > a { width: fit-content; font-size: .8rem; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 .emergency-strip { padding: 58px 0; background: #351d16; color: white; }
 .emergency-strip .shell { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
 .emergency-strip h2 { margin: 0; font-family: Georgia, serif; font-size: clamp(2rem, 4vw, 3.4rem); }
@@ -268,6 +271,7 @@ img { max-width: 100%; height: auto; }
 .empty-gallery h2 { font-family: Georgia, serif; font-size: 2.5rem; line-height: 1.05; }
 .empty-gallery p { color: var(--muted); }
 .area-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.grid-two > .area-cards { grid-template-columns: 1fr; }
 .area-cards a { min-height: 280px; padding: 38px; border: 1px solid var(--line); border-radius: 7px; background: var(--cream); }
 .area-cards h2 { margin: 0; font-family: Georgia, serif; font-size: 2.8rem; }
 .area-cards p:not(.eyebrow) { color: var(--muted); }

@@ -7,6 +7,7 @@ import { createMetadata, faqJsonLd } from "@/lib/seo";
 import { ArrowIcon, CheckIcon, PhoneIcon } from "@/components/ui/Icons";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import SectionHeading from "@/components/ui/SectionHeading";
+import ServiceAreaMap from "@/components/ui/ServiceAreaMap";
 import CallToAction from "@/components/ui/CallToAction";
 import JsonLd from "@/components/ui/JsonLd";
 import HomeGallery from "@/components/home/HomeGallery";
@@ -144,9 +145,7 @@ export default async function HomePage() {
             <SectionHeading eyebrow="Local service" title="Built for Bakersfield properties." copy="CutPro serves Bakersfield and evaluates surrounding-area requests by job location and scope." />
             <Link href="/service-areas/bakersfield" className="button button-outline">Explore the service area</Link>
           </div>
-          <div className="area-map" aria-label="Stylized map showing Bakersfield service focus">
-            <div className="map-road road-one" /><div className="map-road road-two" /><div className="map-ring"><span>Bakersfield</span></div>
-          </div>
+          <ServiceAreaMap />
         </div>
       </section>
 

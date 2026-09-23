@@ -16,7 +16,7 @@ Authorized administrators can now use **Business settings → Administrator acce
 
 The local app uses `.env.local`, which is Git-ignored. The tracked `.env.example` is a blank template, not a credential store. Use `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and the server-only `SUPABASE_SECRET_KEY` from Supabase Settings > API Keys. A database password is not required. After configuration changes, restart the server. Resend is optional for Admin and lead-persistence certification.
 
-The public phone number is configured with `NEXT_PUBLIC_BUSINESS_PHONE`. Both human-readable `(XXX) XXX-XXXX` text and `tel:+1XXXXXXXXXX` links are generated from that same value. Set it in Netlify's production Build and Functions scopes, then redeploy when the answering service changes. `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY` is retained only as a fallback if the primary variable is empty, preventing mismatched display/call numbers. JSON-LD uses E.164. The formatter does not modify Merxus routing configuration.
+The public business phone number is configured only with `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY`. Both human-readable `(XXX) XXX-XXXX` text and `tel:+1XXXXXXXXXX` links are generated from that same value. Set it in Netlify's production Build and Functions scopes, then redeploy when the answering service changes. `NEXT_PUBLIC_BUSINESS_PHONE` is ignored, and there is no hard-coded number fallback. JSON-LD uses E.164. The formatter does not modify Merxus routing configuration. Customer-entered lead phone numbers remain independent.
 
 ## Company / About content
 

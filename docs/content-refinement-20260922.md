@@ -17,9 +17,9 @@ Scope: focused public copy, About editing and business phone presentation. Exist
 
 ## Phone
 
-`NEXT_PUBLIC_BUSINESS_PHONE` supplies display, telephone links and schema. `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY` is a legacy fallback when the primary variable is empty. US numbers normalize to `(XXX) XXX-XXXX` and `tel:+1XXXXXXXXXX`; malformed numbers retain raw display and are omitted from machine-readable E.164 fields. The existing unconfigured default is preserved. The customer phone-input mask is unchanged.
+`NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY` is the sole source for display, telephone links and schema. `NEXT_PUBLIC_BUSINESS_PHONE` is ignored. US numbers normalize to `(XXX) XXX-XXXX` and `tel:+1XXXXXXXXXX`; malformed numbers retain raw display and are omitted from machine-readable E.164 fields. There is no hard-coded phone fallback. The customer phone-input mask is unchanged.
 
-Production inspection before deployment found visible `(213) 466-1363` text paired with `tel:+16613437663` links. The operator was asked to set `NEXT_PUBLIC_BUSINESS_PHONE=+12134661363` in Netlify Build/Functions scopes. No Merxus configuration or DNS was changed.
+Production inspection before deployment found visible `(213) 466-1363` text paired with links dialing a different number. The operator clarified that `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY` must remain authoritative; both display and dialing now use that variable exclusively. The earlier request to set a separate phone variable is superseded. No Merxus configuration or DNS was changed.
 
 ## QA
 

@@ -26,8 +26,7 @@ Keep an existing `.env.local`; do not overwrite saved credentials with the templ
 Copy `.env.example` to `.env.local` only if the local file does not already exist, and populate it locally. Never commit `.env.local`. `.env.example` is deliberately tracked and must contain no actual credentials. `git check-ignore -v -- .env.local` confirms the local file is ignored. Never print credential files or include them in screenshots/logs; the app does not require the database password.
 
 - `NEXT_PUBLIC_SITE_URL`: canonical public origin
-- `NEXT_PUBLIC_BUSINESS_PHONE`: single source for the public phone display, call links, customer email phone CTA, and structured data. US input is shown as `(XXX) XXX-XXXX` and dialed as `tel:+1XXXXXXXXXX`. Change this variable and rebuild/redeploy when the answering number changes.
-- `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY`: legacy fallback only when `NEXT_PUBLIC_BUSINESS_PHONE` is empty; it no longer independently overrides the visible number. Unrecognized formats retain their configured text.
+- `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY`: the sole source for the public business phone display, call links, customer email phone CTA, and structured data. US input is shown as `(XXX) XXX-XXXX` and dialed as `tel:+1XXXXXXXXXX`. Change only this variable and rebuild/redeploy when the answering number changes. Unrecognized formats retain their configured text. There is no hard-coded phone fallback; `NEXT_PUBLIC_BUSINESS_PHONE` is not used.
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: Supabase project URL and browser-safe publishable key
 - `SUPABASE_SECRET_KEY`: server-only database/storage secret key (never expose it in client code)
 - `RESEND_API_KEY`, `LEAD_NOTIFICATION_EMAIL`, `EMAIL_FROM`: transactional email configuration

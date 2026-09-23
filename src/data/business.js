@@ -1,8 +1,7 @@
 import { getBusinessPhone } from "../lib/phone.js";
 
-const configuredPhone = process.env.NEXT_PUBLIC_BUSINESS_PHONE?.trim()
-  || process.env.NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY?.trim()
-  || "+16613437663";
+// This is the only business phone source. Never substitute a different number.
+const configuredPhone = process.env.NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY?.trim() || "";
 
 export const business = {
   name: "CUTPRO Tree Service",

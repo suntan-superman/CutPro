@@ -28,3 +28,27 @@ test("invalid or international values keep raw display without inventing a US nu
     assert.equal(getBusinessPhone(value).phoneE164, null);
   }
 });
+
+test("business phone uses only DISPLAY even when the other variable disagrees or DISPLAY is absent", async () => {
+  const keys = ["NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY", "NEXT_PUBLIC_BUSINESS_PHONE"];
+  const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  try {
+    process.env.NEXT_PUBLIC_BUSINESS_PHONE = "+16615550100";
+    process.env.NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY = "+1 213-466-1363";
+    const configured = (await import("../src/data/business.js?display-authoritative")).business;
+    assert.equal(configured.phoneDisplay, "(213) 466-1363");
+    assert.equal(configured.phoneHref, "tel:+12134661363");
+    assert.equal(configured.phoneE164, "+12134661363");
+
+    delete process.env.NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY;
+    const missing = (await import("../src/data/business.js?display-missing")).business;
+    assert.equal(missing.phoneDisplay, "");
+    assert.equal(missing.phoneHref, "/contact");
+    assert.equal(missing.phoneE164, null);
+  } finally {
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
+});

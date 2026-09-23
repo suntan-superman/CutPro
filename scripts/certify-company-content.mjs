@@ -17,7 +17,7 @@ const run = randomUUID();
 const email = `cutpro-company-qa-${run}@example.invalid`;
 const password = randomBytes(36).toString("base64url");
 const client = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
-const expectedPhone = getBusinessPhone(process.env.CUTPRO_QA_PHONE || process.env.NEXT_PUBLIC_BUSINESS_PHONE?.trim() || process.env.NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY?.trim() || "+16613437663");
+const expectedPhone = getBusinessPhone(process.env.CUTPRO_QA_PHONE || process.env.NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY?.trim() || "");
 const outputDir = `artifacts/company-content-${new URL(origin).hostname}-${run}`;
 let browser, userId, original, changed = false, stage = "startup";
 const pass = (label) => console.log(`PASS ${label}`);

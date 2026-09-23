@@ -31,7 +31,7 @@ Copy `.env.example` to `.env.local` only if the local file does not already exis
 - `SUPABASE_SECRET_KEY`: server-only database/storage secret key (never expose it in client code)
 - `RESEND_API_KEY`: server-only Resend API key with sending permission; never expose or commit it
 - `LEAD_NOTIFICATION_EMAIL`: owner destination for new-lead notifications (environment-configured; never hard-code an inbox)
-- `EMAIL_FROM`: authenticated sender, configured as `CutPro Tree Service <notifications@cutprotree.com>`
+- `EMAIL_FROM`: authenticated CutPro Tree Service sender identity on the verified `cutprotree.com` domain
 - `EMAIL_REPLY_TO`: optional real mailbox for replies; leave blank until a mailbox is available
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID`: optional GA4 measurement ID
 - `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`: optional Cloudflare Turnstile protection; configure both together
@@ -74,11 +74,11 @@ Resend is CutPro's outbound transactional email provider. The verified sending d
 `cutprotree.com`, and production should use:
 
 ```text
-EMAIL_FROM=CutPro Tree Service <notifications@cutprotree.com>
+EMAIL_FROM=<CutPro display name and verified sending mailbox>
 ```
 
-`notifications@cutprotree.com` is currently send-only. CutPro does not have mailbox hosting
-for `@cutprotree.com`, so do not use that address as `EMAIL_REPLY_TO`, configure inbound
+The verified CutPro sending identity is currently send-only. CutPro does not have mailbox hosting
+for `@cutprotree.com`, so do not use the sending identity as `EMAIL_REPLY_TO`, configure inbound
 email, or modify MX records. Set `LEAD_NOTIFICATION_EMAIL` to the temporary real owner
 mailbox used for certification. Set `EMAIL_REPLY_TO` only to a real mailbox that can receive
 replies; it is optional and can later be changed to `estimates@cutprotree.com` after mailbox

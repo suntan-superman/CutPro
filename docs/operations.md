@@ -6,20 +6,20 @@ A successful estimate submission is validated on the server, inserted exactly on
 
 ## Transactional email and Resend
 
-Resend handles outbound transactional email only. The verified sending domain is `cutprotree.com` and the sender must be `CutPro Tree Service <notifications@cutprotree.com>`. `notifications@cutprotree.com` is a send-only identity today: no `@cutprotree.com` mailbox hosting exists. Do not configure Resend Receiving, change MX records, or use that sender as a Reply-To address.
+Resend handles outbound transactional email only. The verified sending domain is `cutprotree.com` and the sender must be the approved CutPro Tree Service identity on that domain. That sending identity is send-only today: no `@cutprotree.com` mailbox hosting exists. Do not configure Resend Receiving, change MX records, or use the sending identity as a Reply-To address.
 
 The server reads these environment variables:
 
 - `RESEND_API_KEY` — server-only Resend sending key. Use the narrowest sending permission available, rotate it in Resend, and update local `.env.local` plus the existing Netlify site's environment variables without printing the value.
 - `LEAD_NOTIFICATION_EMAIL` — temporary real owner mailbox for new-lead notifications; it is never hard-coded.
-- `EMAIL_FROM` — `CutPro Tree Service <notifications@cutprotree.com>`.
+- `EMAIL_FROM` — the approved CutPro Tree Service display name and verified sending mailbox on `cutprotree.com`.
 - `EMAIL_REPLY_TO` — optional real receiving mailbox. Leave blank while CutPro has no mailbox hosting; later set it to a hosted address such as `estimates@cutprotree.com`.
 
 The owner message includes the reference, timestamp, customer/contact facts, property, services, urgency, description, timing, notes, private-photo count, and a protected Admin Lead Manager link. It does not attach photos or include Storage URLs. The customer acknowledgement confirms receipt, includes the reference, requested service, configured CutPro phone, and `cutprotree.com`; it does not promise an appointment, response time, pricing, availability, or same-day service.
 
 The exact sequence is validation → private-photo ownership/finalization → one atomic Supabase lead persistence → owner email attempt → customer email attempt. The two email attempts are isolated: an owner failure does not prevent the customer attempt, and either failure leaves the persisted lead and private photos intact. A replayed submission returns the existing persisted result and does not send duplicate notifications.
 
-For a local or deployed certification, use synthetic data clearly marked `CUTPRO RESEND CERTIFICATION TEST — NOT A CUSTOMER LEAD`. Confirm both messages show `CutPro Tree Service <notifications@cutprotree.com>`, authentication passes in Resend/delivered headers, no photo is attached, no Storage URL is exposed, and the lead remains visible through the protected Admin Lead Manager. Run `npm run check` before and after the test. Do not send routine tests to real customers.
+For a local or deployed certification, use synthetic data clearly marked `CUTPRO RESEND CERTIFICATION TEST — NOT A CUSTOMER LEAD`. Confirm both messages show the approved CutPro display name and verified-domain sender, authentication passes in Resend/delivered headers, no photo is attached, no Storage URL is exposed, and the lead remains visible through the protected Admin Lead Manager. Run `npm run check` before and after the test. Do not send routine tests to real customers.
 
 With a local production server running, `npm run qa:resend` submits one synthetic mobile estimate, uploads one private test photo directly to Supabase, verifies exactly one persisted lead and private access, and checks the route's sanitized owner/customer send statuses. It uses `RESEND_QA_CUSTOMER_EMAIL` when set, otherwise the configured owner destination, and retains the clearly marked QA lead. The send-only key intentionally cannot list or read messages; inspect the recipient mailbox and Resend's dashboard event/authentication details to complete human delivery certification.
 

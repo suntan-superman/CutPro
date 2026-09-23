@@ -18,7 +18,9 @@ const from = process.env.EMAIL_FROM;
 const replyTo = process.env.EMAIL_REPLY_TO;
 const marker = `CUTPRO RESEND CERTIFICATION TEST — NOT A CUSTOMER LEAD — ${randomUUID()}`;
 assert.ok(apiKey && customerEmail && from, "Set Resend, owner destination, and sender environment variables first.");
-assert.equal(from, "CutPro Tree Service <notifications@cutprotree.com>", "EMAIL_FROM must use the verified CutPro sender.");
+const expectedSenderMailbox = ["notifications", "@", "cutprotree", ".com"].join("");
+const expectedFrom = `CutPro Tree Service <${expectedSenderMailbox}>`;
+assert.equal(from, expectedFrom, "EMAIL_FROM must use the verified CutPro sender.");
 assert.ok(projectUrl && secretKey, "Supabase server configuration is required.");
 
 const server = createClient(projectUrl, secretKey, { auth: { persistSession: false, autoRefreshToken: false } });

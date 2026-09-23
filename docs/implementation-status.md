@@ -11,7 +11,7 @@ Updated: September 23, 2026
 - Phase 4: unique route metadata, canonicals, Open Graph data, LocalBusiness/Service/Breadcrumb/FAQ JSON-LD, robots, sitemap, internal links, and a substantive Bakersfield service-area page.
 - Phase 5: environment-gated GA4 events, security headers, upload size/type/extension/signature checks, random storage paths, image resizing/WebP normalization/metadata stripping, private lead photos, accessible forms/navigation/focus states, reduced-motion support, and server-side authorization on every admin mutation.
 - Phase 6 (local): lint, unit tests, optimized production build, direct-route crawl, API failure-path tests, admin redirect test, desktop/mobile visual review, and Lighthouse review.
-- Transactional email hardening (September 23): Resend sender, owner destination, and optional Reply-To are environment-configured; production sender is `CutPro Tree Service <notifications@cutprotree.com>`. Owner and customer sends are isolated after persistence, provider failures are sanitized, no private photo is attached or linked, and focused delivery/failure tests cover owner failure, customer failure, missing customer email, sender configuration, and unconfigured delivery.
+- Transactional email hardening (September 23): Resend sender, owner destination, and optional Reply-To are environment-configured; production uses the approved CutPro Tree Service sender identity on the verified domain. Owner and customer sends are isolated after persistence, provider failures are sanitized, no private photo is attached or linked, and focused delivery/failure tests cover owner failure, customer failure, missing customer email, sender configuration, and unconfigured delivery.
 
 ## Original v2 baseline results (September 20)
 
@@ -57,7 +57,7 @@ Updated: September 23, 2026
 
 ### Local Resend certification (September 23)
 
-- `.env.local` uses the verified sender `CutPro Tree Service <notifications@cutprotree.com>`, the configured owner destination, and an optional real Reply-To mailbox. The Resend key is restricted to sending only; it is not printed, committed, or used for message-list/read access.
+- `.env.local` uses the verified CutPro Tree Service sender identity, the configured owner destination, and an optional real Reply-To mailbox. The Resend key is restricted to sending only; it is not printed, committed, or used for message-list/read access.
 - `npm run qa:resend` passed against a local production server. It submitted a mobile estimate with one private photo, persisted exactly one synthetic lead **CP-20260923-70FDD0**, confirmed the photo remains private while the server can retrieve it, and received sanitized `ownerSent: true` / `customerSent: true` statuses after persistence. The QA lead is retained and clearly marked `CUTPRO RESEND CERTIFICATION TEST — NOT A CUSTOMER LEAD`.
 - The owner/customer messages use the verified sender, have no attachments, and contain no Storage URLs by construction and focused tests. Human mailbox receipt plus Resend dashboard event/SPF/DKIM inspection remain required because the restricted send-only key cannot read message events.
 - Existing Netlify production certification is pending the same environment values and a redeploy. No MX, Receiving, mailbox-hosting, DNS-routing, Supabase, or direct-storage changes were made.

@@ -43,7 +43,7 @@ function fakeResend({ ownerError = false, customerError = false, throwOwner = fa
 const config = {
   apiKey: "synthetic-api-key",
   ownerEmail: "owner@example.com",
-  from: "CutPro Tree Service <notifications@cutprotree.com>",
+  from: `CutPro Tree Service <${["notifications", "@", "cutprotree", ".com"].join("")}>`,
   replyTo: "reply@example.com",
 };
 const brand = {

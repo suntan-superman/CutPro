@@ -42,14 +42,25 @@ export async function handleDirectUpload(request, purpose, action) {
       return json(await verifyUploadFile(client, { input, purpose, ownerId }));
     }
     const result = await finishUploadSession(client, { input, purpose, ownerId });
+    let notificationStatus = null;
     if (purpose === "estimate" && !result.duplicate) {
       // Persist the lead and its references atomically BEFORE optional email.
       try {
         const { data: lead } = await client.from("leads").select("*").eq("id", input.sessionId).single();
-        if (lead) await sendLeadNotifications(lead);
-      } catch { console.warn("Estimate saved; optional notification did not complete."); }
+        if (lead) {
+          const notification = await sendLeadNotifications(lead);
+          notificationStatus = {
+            ownerSent: Boolean(notification.owner?.sent),
+            customerSent: Boolean(notification.customer?.sent),
+          };
+        }
+      } catch {
+        // Never turn a persisted lead into a failed submission because email is
+        // unavailable. Do not return provider diagnostics to the browser.
+        notificationStatus = { ownerSent: false, customerSent: false };
+      }
     }
-    return json(result);
+    return json({ ...result, ...(notificationStatus ? { notificationStatus } : {}) });
   } catch (error) {
     if (error instanceof DirectUploadError) return json({ message: error.message }, error.status);
     if (error instanceof UploadValidationError) return json({ message: error.message }, 422);

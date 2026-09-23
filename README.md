@@ -29,7 +29,10 @@ Copy `.env.example` to `.env.local` only if the local file does not already exis
 - `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY`: the sole source for the public business phone display, call links, customer email phone CTA, and structured data. US input is shown as `(XXX) XXX-XXXX` and dialed as `tel:+1XXXXXXXXXX`. Change only this variable and rebuild/redeploy when the answering number changes. Unrecognized formats retain their configured text. There is no hard-coded phone fallback; `NEXT_PUBLIC_BUSINESS_PHONE` is not used.
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: Supabase project URL and browser-safe publishable key
 - `SUPABASE_SECRET_KEY`: server-only database/storage secret key (never expose it in client code)
-- `RESEND_API_KEY`, `LEAD_NOTIFICATION_EMAIL`, `EMAIL_FROM`: transactional email configuration
+- `RESEND_API_KEY`: server-only Resend API key with sending permission; never expose or commit it
+- `LEAD_NOTIFICATION_EMAIL`: owner destination for new-lead notifications (environment-configured; never hard-code an inbox)
+- `EMAIL_FROM`: authenticated sender, configured as `CutPro Tree Service <notifications@cutprotree.com>`
+- `EMAIL_REPLY_TO`: optional real mailbox for replies; leave blank until a mailbox is available
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID`: optional GA4 measurement ID
 - `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`: optional Cloudflare Turnstile protection; configure both together
 
@@ -65,9 +68,37 @@ Gallery uploads accept up to six JPG, PNG, or WebP files, each up to 8 MiB. Ever
 
 Signed upload grants expire after Supabase's fixed two hours; application drafts accept finalization for 30 minutes. Hourly cleanup waits at least 130 minutes before removing abandoned objects or completed sessions' temporary originals. See [direct-upload architecture](docs/architecture/0002-direct-storage-uploads.md) and the operations guide for lifecycle, recovery, and rollout requirements.
 
-## Email setup
+## Transactional email setup
 
-When email setup is separately authorized, verify a sending domain with Resend, set `EMAIL_FROM` to an address on that domain, and set `LEAD_NOTIFICATION_EMAIL` to the CutPro owner inbox. Without email credentials, a valid database submission is still retained and notification delivery is skipped.
+Resend is CutPro's outbound transactional email provider. The verified sending domain is
+`cutprotree.com`, and production should use:
+
+```text
+EMAIL_FROM=CutPro Tree Service <notifications@cutprotree.com>
+```
+
+`notifications@cutprotree.com` is currently send-only. CutPro does not have mailbox hosting
+for `@cutprotree.com`, so do not use that address as `EMAIL_REPLY_TO`, configure inbound
+email, or modify MX records. Set `LEAD_NOTIFICATION_EMAIL` to the temporary real owner
+mailbox used for certification. Set `EMAIL_REPLY_TO` only to a real mailbox that can receive
+replies; it is optional and can later be changed to `estimates@cutprotree.com` after mailbox
+hosting exists.
+
+Estimate processing validates the request, verifies/finalizes private photos, persists one
+lead in Supabase, and only then attempts the owner notification and customer acknowledgement.
+Email delivery is downstream and independent: a Resend outage or rejected message never
+deletes the lead, uploaded photos, or successful submission. The email contains no photo
+attachments and no public/private Storage URLs; owners use the protected Lead Manager link.
+If Resend is not configured, a valid lead is still retained and delivery is reported as
+skipped.
+
+To rotate the API key, create a new restricted sending key in Resend, replace `RESEND_API_KEY`
+in local `.env.local` and the existing Netlify site's environment variables, redeploy, verify
+one synthetic estimate, then revoke the old key in Resend. Never put a key in source, Git,
+screenshots, logs, or chat. After future email changes, run `npm run check` and repeat the
+synthetic owner/customer delivery test before production certification.
+
+For the local end-to-end email check, start a production server with `npm run build && npm run start -- --port 3014`, then run `npm run qa:resend`. Set `RESEND_QA_CUSTOMER_EMAIL` in the local environment if the customer acknowledgement should go to a different real mailbox; otherwise it uses `LEAD_NOTIFICATION_EMAIL`. This creates one retained, unmistakably synthetic QA lead and one small private test photo.
 
 ## Quality checks
 

@@ -1,6 +1,6 @@
 # Implementation status
 
-Updated: September 21, 2026
+Updated: September 23, 2026
 
 ## Completed in this repository
 
@@ -11,6 +11,7 @@ Updated: September 21, 2026
 - Phase 4: unique route metadata, canonicals, Open Graph data, LocalBusiness/Service/Breadcrumb/FAQ JSON-LD, robots, sitemap, internal links, and a substantive Bakersfield service-area page.
 - Phase 5: environment-gated GA4 events, security headers, upload size/type/extension/signature checks, random storage paths, image resizing/WebP normalization/metadata stripping, private lead photos, accessible forms/navigation/focus states, reduced-motion support, and server-side authorization on every admin mutation.
 - Phase 6 (local): lint, unit tests, optimized production build, direct-route crawl, API failure-path tests, admin redirect test, desktop/mobile visual review, and Lighthouse review.
+- Transactional email hardening (September 23): Resend sender, owner destination, and optional Reply-To are environment-configured; production sender is `CutPro Tree Service <notifications@cutprotree.com>`. Owner and customer sends are isolated after persistence, provider failures are sanitized, no private photo is attached or linked, and focused delivery/failure tests cover owner failure, customer failure, missing customer email, sender configuration, and unconfigured delivery.
 
 ## Original v2 baseline results (September 20)
 
@@ -35,7 +36,7 @@ Updated: September 21, 2026
 - Authorization certification passed 59 checks: anonymous and authenticated-nonadmin HTML/RSC access denied across all six protected Admin route shapes, all eight privileged API mutation handlers returned 401, and direct database reads exposed no rows.
 - Gallery: single/multiple uploads and previews, caption/category/service edits, featured/published/order controls, before/after pairing, 2200px WebP conversion/metadata stripping, invalid/oversized/spoofed input rejection, mixed-batch rollback, and native confirmation cancel/accept all passed. Public updates required no rebuild. All test gallery rows are archived/unpublished and all test gallery objects are removed.
 - Testimonials: create/edit/source/link/rating, featured and ordinary publication, ordering, publish/unpublish, and native archive cancel/accept passed through Admin UI. All synthetic review rows are archived/unpublished and absent from the public site.
-- Public estimate: the actual mobile-width UI created exactly one Workside QA lead, **CP-20260921-5F7A0C**, with two private photos and all requested fields. Idempotent replay returned the same reference and created no extra lead or objects. Public photo URLs/anonymous downloads failed, authorized signed images worked, and the Admin search/filters/contact links/notes and all five statuses persisted. This clearly marked QA lead remains in Won; it was not deleted. Resend was unconfigured throughout.
+- Public estimate: the actual mobile-width UI created exactly one Workside QA lead, **CP-20260921-5F7A0C**, with two private photos and all requested fields. Idempotent replay returned the same reference and created no extra lead or objects. Public photo URLs/anonymous downloads failed, authorized signed images worked, and the Admin search/filters/contact links/notes and all five statuses persisted. This clearly marked QA lead remains in Won; it was not deleted. Resend was unconfigured during that earlier Supabase certification; the separate Resend certification is documented below.
 - Session refresh was exercised by expiring stored session metadata: the proxy rotated the refresh token, persisted hardened cookies, and kept navigation authorized. Safe business settings were tested through UI and restored exactly. No credentials or tokens were logged. Logout's upstream-error cleanup paths also passed six focused unit tests without forcing a live service outage.
 - Real operator logout returned 303, removed all project auth cookies, and subsequent protected access redirected to login. A local redirect-host mismatch discovered by that check was corrected by using a relative login redirect so it stays on the browser's origin behind reverse proxies.
 - Final public browser crawl: 18 linked route/query variants plus robots, sitemap, and login returned 200, with zero browser errors. Final valid gallery/testimonial/lead/settings runs had no unexpected browser console errors; rejected upload requests intentionally produced 422 network errors.
@@ -54,12 +55,19 @@ Updated: September 21, 2026
 - `npm run qa:browser` opens a separate local Chrome profile for the operator to sign in directly, enabling actual UI-driven certification without sharing the password.
 - Direct-storage upload architecture implemented locally: CutPro routes accept only bounded JSON, authenticated Gallery drafts use private `gallery-staging`, estimate drafts use private `lead-photos`, Supabase grants are exact-path and non-upsert, stored objects are independently checked, gallery output is trusted Sharp-normalized WebP, estimate originals remain private, and finalization is atomic/idempotent. The old Netlify multipart-size blocker is avoided rather than weakened. Live migration and existing-Netlify browser certification remain release gates.
 
+### Local Resend certification (September 23)
+
+- `.env.local` uses the verified sender `CutPro Tree Service <notifications@cutprotree.com>`, the configured owner destination, and an optional real Reply-To mailbox. The Resend key is restricted to sending only; it is not printed, committed, or used for message-list/read access.
+- `npm run qa:resend` passed against a local production server. It submitted a mobile estimate with one private photo, persisted exactly one synthetic lead **CP-20260923-70FDD0**, confirmed the photo remains private while the server can retrieve it, and received sanitized `ownerSent: true` / `customerSent: true` statuses after persistence. The QA lead is retained and clearly marked `CUTPRO RESEND CERTIFICATION TEST — NOT A CUSTOMER LEAD`.
+- The owner/customer messages use the verified sender, have no attachments, and contain no Storage URLs by construction and focused tests. Human mailbox receipt plus Resend dashboard event/SPF/DKIM inspection remain required because the restricted send-only key cannot read message events.
+- Existing Netlify production certification is pending the same environment values and a redeploy. No MX, Receiving, mailbox-hosting, DNS-routing, Supabase, or direct-storage changes were made.
+
 ## Remaining launch dependencies
 
 These cannot be completed or truthfully simulated without CutPro/provider access:
 
 1. Resolve the Netlify upload-size design choice and certify the existing deployed Admin and public estimate workflows
-2. Resend sending-domain verification, API key, sender, and owner lead inbox when enabling email (not required for this certification phase)
+2. Deployed Resend certification after the existing Netlify environment receives `RESEND_API_KEY`, `LEAD_NOTIFICATION_EMAIL`, `EMAIL_FROM`, and optional `EMAIL_REPLY_TO`; no MX or inbound-mail changes are required
 3. Optional Cloudflare Turnstile keys
 4. Production GA4 measurement ID and Search Console ownership
 5. Existing Netlify site's URL/access and Supabase environment configuration for deployed certification; no replacement site or DNS changes

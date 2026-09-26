@@ -22,10 +22,15 @@ export default function Header() {
         </div>
       </div>
       <div className="shell nav-row">
-        <Link href="/" className="brand" onClick={() => setOpen(false)}>
-          <TreeMark className="brand-mark" />
-          <span><strong>CUTPRO</strong><small>Tree Service</small></span>
-        </Link>
+        <div className="header-brand-group">
+          <Link href="/" className="brand" onClick={() => setOpen(false)}>
+            <TreeMark className="brand-mark" />
+            <span><strong>CUTPRO</strong><small>Tree Service</small></span>
+          </Link>
+          <a className="header-credit" href="https://gnzmarketing.netlify.app/" target="_blank" rel="noopener noreferrer" aria-label="GNZ Marketing, LLC website (opens in a new tab)">
+            <span>by</span><strong>GNZ Marketing, LLC</strong>
+          </a>
+        </div>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {primaryNavigation.map((item) => (
             <Link key={item.href} href={item.href} aria-current={pathname.startsWith(item.href) ? "page" : undefined}>

@@ -11,7 +11,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --test tests/logout-session.test.js tests/session-cookies.test.js tests/supabase-config.test.js tests/upload-validation.test.js tests/validation.test.js tests/phone.test.js tests/company-content.test.js tests/service-map.test.js tests/notifications.test.js tests/direct-upload-client.test.js tests/direct-uploads.test.js tests/direct-upload-sql.test.js tests/upload-cleanup.test.js",
+    "test": "node --test tests/logout-session.test.js tests/session-cookies.test.js tests/supabase-config.test.js tests/upload-validation.test.js tests/validation.test.js tests/phone.test.js tests/company-content.test.js tests/service-map.test.js tests/notifications.test.js tests/direct-upload-client.test.js tests/direct-uploads.test.js tests/direct-upload-sql.test.js tests/upload-cleanup.test.js tests/admin-idle.test.js",
     "check": "npm run lint && npm test && npm run build",
     "qa:browser": "node scripts/open-admin-certification.mjs",
     "qa:resend": "node scripts/certify-resend-email.mjs",

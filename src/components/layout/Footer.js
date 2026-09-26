@@ -32,7 +32,7 @@ export default function Footer() {
       </div>
       <div className="shell footer-bottom">
         <p>© {new Date().getFullYear()} {business.name}. All rights reserved.</p>
-        <div><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/admin/login">Admin</Link></div>
+        <div><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div>
       </div>
     </footer>
   );

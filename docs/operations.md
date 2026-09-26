@@ -33,6 +33,10 @@ Provision Gabe later only after explicit approval using the same two-part proces
 
 Authorized administrators can now use **Business settings → Administrator access** to invite another administrator by email or deactivate an existing portal account. Deactivation removes the `admin_users` authorization row; it does not delete the Supabase Auth identity. The interface prevents an administrator from deactivating themselves or the last active administrator.
 
+### Admin session safety
+
+The public website does not expose an Admin footer link. The protected owner portal tracks recent browser activity and signs out after 30 minutes without activity. A modal warning appears with a five-minute countdown so an operator can save any in-progress edits and choose **Stay signed in**; that action starts a fresh idle window. If the warning is ignored, the existing server logout route revokes the Supabase session and clears this project's auth cookies before returning to sign-in. A browser session without a valid recent-activity marker must authenticate again, and portal edits are only persisted by their normal Save actions rather than being silently discarded or auto-submitted.
+
 The local app uses `.env.local`, which is Git-ignored. The tracked `.env.example` is a blank template, not a credential store. Use `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and the server-only `SUPABASE_SECRET_KEY` from Supabase Settings > API Keys. A database password is not required. After configuration changes, restart the server. Resend is optional for Admin and lead-persistence certification.
 
 The public business phone number is configured only with `NEXT_PUBLIC_BUSINESS_PHONE_DISPLAY`. Both human-readable `(XXX) XXX-XXXX` text and `tel:+1XXXXXXXXXX` links are generated from that same value. Set it in Netlify's production Build and Functions scopes, then redeploy when the answering service changes. `NEXT_PUBLIC_BUSINESS_PHONE` is ignored, and there is no hard-coded number fallback. JSON-LD uses E.164. The formatter does not modify Merxus routing configuration. Customer-entered lead phone numbers remain independent.

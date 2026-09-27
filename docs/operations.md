@@ -33,6 +33,8 @@ Provision Gabe later only after explicit approval using the same two-part proces
 
 Authorized administrators can now use **Business settings → Administrator access** to invite another administrator by email or deactivate an existing portal account. Deactivation removes the `admin_users` authorization row; it does not delete the Supabase Auth identity. The interface prevents an administrator from deactivating themselves or the last active administrator.
 
+From an estimate or contact request's detail page, an authorized administrator can choose **Delete request**. The native confirmation warns that deletion is permanent. The server verifies admin access, removes the request's private `lead-photos` objects, and then deletes the `leads` row; malformed stored paths or storage failures fail closed and leave the request available for retry. This is separate from status/notes updates and is not available to anonymous or non-admin callers.
+
 ### Admin session safety
 
 The public website does not expose an Admin footer link. The protected owner portal tracks recent browser activity and signs out after 30 minutes without activity. A modal warning appears with a five-minute countdown so an operator can save any in-progress edits and choose **Stay signed in**; that action starts a fresh idle window. If the warning is ignored, the existing server logout route revokes the Supabase session and clears this project's auth cookies before returning to sign-in. A browser session without a valid recent-activity marker must authenticate again, and portal edits are only persisted by their normal Save actions rather than being silently discarded or auto-submitted.

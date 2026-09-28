@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
+import AdminConfirmDialog from "@/components/admin/AdminConfirmDialog";
 
 const empty = { customerName: "", testimonialText: "", source: "Direct Customer", sourceUrl: "", rating: "", featured: false, published: false, sortOrder: 0 };
 const sources = ["Google", "Yelp", "Facebook", "Direct Customer", "Other"];
@@ -57,8 +58,10 @@ function TestimonialForm({ values, change, onSubmit, submitLabel, disabled, show
 
 function TestimonialItem({ item, router }) {
   const [values, setValues] = useState({ customerName: item.customer_name, testimonialText: item.testimonial_text, source: item.source, sourceUrl: item.source_url || "", rating: item.rating || "", featured: item.featured, published: item.published, sortOrder: item.sort_order }); const [state, setState] = useState("idle");
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const change = (key, value) => setValues((current) => ({ ...current, [key]: value }));
   const save = async (event) => { event.preventDefault(); setState("saving"); const response = await fetch(`/api/admin/testimonials/${item.id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(values) }); setState(response.ok ? "saved" : "error"); if (response.ok) router.refresh(); };
-  const remove = async () => { if (!window.confirm("Archive this testimonial? It will immediately disappear from the public site.")) return; const response = await fetch(`/api/admin/testimonials/${item.id}`, { method: "DELETE" }); if (response.ok) router.refresh(); else setState("error"); };
-  return <section className="admin-card testimonial-admin-item"><TestimonialForm values={values} change={change} onSubmit={save} submitLabel={state === "saving" ? "Saving…" : state === "saved" ? "Saved" : "Save changes"} disabled={state === "saving"} showRemove onRemove={remove} />{state === "error" && <span className="field-error">The change could not be saved.</span>}</section>;
+  const remove = () => setConfirmOpen(true);
+  const confirmRemove = async () => { setState("saving"); const response = await fetch(`/api/admin/testimonials/${item.id}`, { method: "DELETE" }); if (response.ok) router.refresh(); else { setConfirmOpen(false); setState("error"); } };
+  return <><section className="admin-card testimonial-admin-item"><TestimonialForm values={values} change={change} onSubmit={save} submitLabel={state === "saving" ? "Saving…" : state === "saved" ? "Saved" : "Save changes"} disabled={state === "saving"} showRemove onRemove={remove} />{state === "error" && <span className="field-error">The change could not be saved.</span>}</section><AdminConfirmDialog open={confirmOpen} title="Archive this testimonial?" message="It will immediately disappear from the public site, but the archived record will remain available to the team." confirmLabel="Archive testimonial" busy={state === "saving"} onCancel={() => setConfirmOpen(false)} onConfirm={confirmRemove} /></>;
 }

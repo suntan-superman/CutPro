@@ -109,15 +109,15 @@ export default function AdminSessionGuard() {
   if (!showWarning || isLoggingOut) return null;
 
   return (
-    <div className="admin-session-overlay" role="presentation">
-      <section className="admin-session-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-session-title">
+    <div className="admin-modal-overlay" role="presentation">
+      <section className="admin-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-session-title">
         <p className="eyebrow">Security reminder</p>
         <h2 id="admin-session-title">Still working in the owner portal?</h2>
         <p>
           You will be signed out in <strong>{formatIdleRemaining(remainingSeconds)}</strong> because there has been no activity.
           Save any changes you are editing, then stay signed in to continue.
         </p>
-        <div className="admin-session-actions">
+        <div className="admin-modal-actions">
           <button type="button" className="button button-primary" onClick={staySignedIn}>Stay signed in</button>
           <button type="button" className="button button-outline" onClick={() => logout("manual")}>Sign out now</button>
         </div>

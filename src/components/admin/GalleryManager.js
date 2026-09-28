@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import useObjectUrls from "@/hooks/useObjectUrls";
 import { createDirectUploadDraft, submitDirectUpload, validateDirectUploadFiles } from "@/lib/directUploadClient";
+import AdminConfirmDialog from "@/components/admin/AdminConfirmDialog";
 
 const categories = ["Tree Removal", "Tree Trimming", "Stump Grinding", "Emergency/Storm", "Equipment", "Before & After", "Other"];
 const services = [["", "None"], ["tree-removal", "Tree Removal"], ["tree-trimming", "Tree Trimming"], ["stump-grinding", "Stump Grinding"], ["emergency-tree-service", "Emergency Tree Service"]];
@@ -76,11 +77,13 @@ export default function GalleryManager({ initialItems }) {
 function GalleryItem({ item, router }) {
   const [values, setValues] = useState({ altText: item.alt_text, caption: item.caption || "", category: item.category, serviceSlug: item.service_slug || "", featured: item.featured, published: item.published, teamPhoto: item.team_photo, sortOrder: item.sort_order, beforeAfterGroup: item.before_after_group || "", beforeAfterRole: item.before_after_role || "" });
   const [state, setState] = useState("idle");
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const save = async () => { setState("saving"); const response = await fetch(`/api/admin/gallery/${item.id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(values) }); setState(response.ok ? "saved" : "error"); if (response.ok) router.refresh(); };
-  const remove = async () => { if (!window.confirm("Remove this photo from the gallery? This also removes the stored image and cannot be undone.")) return; setState("saving"); const response = await fetch(`/api/admin/gallery/${item.id}`, { method: "DELETE" }); if (response.ok) router.refresh(); else setState("error"); };
+  const remove = () => setConfirmOpen(true);
+  const confirmRemove = async () => { setState("saving"); const response = await fetch(`/api/admin/gallery/${item.id}`, { method: "DELETE" }); if (response.ok) router.refresh(); else { setConfirmOpen(false); setState("error"); } };
   const change = (key, value) => setValues((current) => ({ ...current, [key]: value }));
   const fieldId = (field) => `gallery-${item.id}-${field}`;
-  return <article className="admin-media-card">
+  return <><article className="admin-media-card">
     {/* eslint-disable-next-line @next/next/no-img-element */}<img src={item.public_url} alt={item.alt_text} />
     <div className="admin-media-fields">
       <div className="field"><label htmlFor={fieldId("altText")}>Photo description</label><input id={fieldId("altText")} value={values.altText} onChange={(event) => change("altText", event.target.value)} /></div>
@@ -96,5 +99,5 @@ function GalleryItem({ item, router }) {
       <div className="admin-item-actions"><button className="button button-dark" type="button" onClick={save} disabled={state === "saving"}>{state === "saving" ? "Saving…" : state === "saved" ? "Saved" : "Save"}</button><button className="button button-danger" type="button" onClick={remove}>Delete</button></div>
       {state === "error" && <span className="field-error">The change could not be completed.</span>}
     </div>
-  </article>;
+  </article><AdminConfirmDialog open={confirmOpen} title="Remove this photo from the gallery?" message="This also removes the stored image and cannot be undone." confirmLabel="Delete photo" busy={state === "saving"} onCancel={() => setConfirmOpen(false)} onConfirm={confirmRemove} /></>;
 }

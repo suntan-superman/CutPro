@@ -4,7 +4,7 @@ import { createMetadata } from "@/lib/seo";
 import CallToAction from "@/components/ui/CallToAction";
 import ServiceAreaMap from "@/components/ui/ServiceAreaMap";
 
-export const metadata = createMetadata({ title: "Service Areas", description: "CutPro tree service coverage in Bakersfield and surrounding areas, subject to job location and scope.", path: "/service-areas" });
+export const metadata = createMetadata({ title: "Service Areas", description: "CutPro property-service coverage in Bakersfield and surrounding areas, subject to job location and scope.", path: "/service-areas" });
 
 export default function ServiceAreasPage() {
   return (

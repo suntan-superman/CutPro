@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import useObjectUrls from "@/hooks/useObjectUrls";
 import { createDirectUploadDraft, submitDirectUpload, validateDirectUploadFiles } from "@/lib/directUploadClient";
 import AdminConfirmDialog from "@/components/admin/AdminConfirmDialog";
+import { services as serviceCatalog } from "@/data/services";
 
 const categories = ["Tree Removal", "Tree Trimming", "Stump Grinding", "Emergency/Storm", "Equipment", "Before & After", "Other"];
-const services = [["", "None"], ["tree-removal", "Tree Removal"], ["tree-trimming", "Tree Trimming"], ["stump-grinding", "Stump Grinding"], ["emergency-tree-service", "Emergency Tree Service"]];
+const serviceOptions = [["", "None"], ...serviceCatalog.map(({ slug, name }) => [slug, name])];
 
 export default function GalleryManager({ initialItems }) {
   const router = useRouter();
@@ -53,7 +54,7 @@ export default function GalleryManager({ initialItems }) {
 
   return <>
     <section className="admin-card">
-      <div className="admin-card-heading"><div><h2>Add project photos</h2><p>Upload JPG, PNG, or WebP images up to 8 MB each. Photos upload directly to secure storage and are checked and optimized before publication.</p></div></div>
+      <div className="admin-card-heading"><div><h2>Add project photos</h2><p>Upload JPG, PNG, or WebP images up to 8 MB each. Photos upload directly to secure storage and are checked and optimized before publication. Associate each photo with a service so it appears on that service&apos;s page.</p></div></div>
       <form className="admin-form" onSubmit={uploadFiles} aria-busy={busy}>
         <div className="field"><label htmlFor="galleryFiles">Photos (up to 6)</label><input id="galleryFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple required={!previews.length} disabled={locked} onChange={selectFiles} /></div>
         {previews.length > 0 && <div className="admin-upload-previews">{previews.map((item) => /* eslint-disable-next-line @next/next/no-img-element */ <img key={item.url} src={item.url} alt="Selected upload preview" />)}</div>}
@@ -61,7 +62,7 @@ export default function GalleryManager({ initialItems }) {
           <div className="field full"><label htmlFor="newAlt">Photo description <span>*</span></label><input id="newAlt" value={upload.altText} disabled={locked} onChange={(event) => changeUpload("altText", event.target.value)} required placeholder="Example: CutPro crew trimming a mature tree beside a Bakersfield home" /></div>
           <div className="field full"><label htmlFor="newCaption">Caption</label><input id="newCaption" value={upload.caption} disabled={locked} onChange={(event) => changeUpload("caption", event.target.value)} /></div>
           <div className="field"><label htmlFor="newCategory">Category</label><select id="newCategory" value={upload.category} disabled={locked} onChange={(event) => changeUpload("category", event.target.value)}>{categories.map((value) => <option key={value}>{value}</option>)}</select></div>
-          <div className="field"><label htmlFor="newService">Related service</label><select id="newService" value={upload.serviceSlug} disabled={locked} onChange={(event) => changeUpload("serviceSlug", event.target.value)}>{services.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>
+          <div className="field"><label htmlFor="newService">Related service</label><select id="newService" value={upload.serviceSlug} disabled={locked} onChange={(event) => changeUpload("serviceSlug", event.target.value)}>{serviceOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>
         </div>
         <div className="toggle-row"><label><input type="checkbox" checked={upload.featured} disabled={locked} onChange={(event) => changeUpload("featured", event.target.checked)} /> Feature on homepage</label><label><input type="checkbox" checked={upload.published} disabled={locked} onChange={(event) => changeUpload("published", event.target.checked)} /> Publish now</label><label><input type="checkbox" checked={upload.teamPhoto} disabled={locked} onChange={(event) => changeUpload("teamPhoto", event.target.checked)} /> Use as team photo</label></div>
         {message && <div className="admin-feedback" role="status" aria-live="polite">{message}</div>}
@@ -90,7 +91,7 @@ function GalleryItem({ item, router }) {
       <div className="field"><label htmlFor={fieldId("caption")}>Caption</label><input id={fieldId("caption")} value={values.caption} onChange={(event) => change("caption", event.target.value)} /></div>
       <div className="form-grid">
         <div className="field"><label htmlFor={fieldId("category")}>Category</label><select id={fieldId("category")} value={values.category} onChange={(event) => change("category", event.target.value)}>{categories.map((value) => <option key={value}>{value}</option>)}</select></div>
-        <div className="field"><label htmlFor={fieldId("serviceSlug")}>Service</label><select id={fieldId("serviceSlug")} value={values.serviceSlug} onChange={(event) => change("serviceSlug", event.target.value)}>{services.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>
+        <div className="field"><label htmlFor={fieldId("serviceSlug")}>Service</label><select id={fieldId("serviceSlug")} value={values.serviceSlug} onChange={(event) => change("serviceSlug", event.target.value)}>{serviceOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>
         <div className="field"><label htmlFor={fieldId("sortOrder")}>Display order</label><input id={fieldId("sortOrder")} type="number" value={values.sortOrder} onChange={(event) => change("sortOrder", event.target.value)} /></div>
         <div className="field"><label htmlFor={fieldId("beforeAfterGroup")}>Pair name</label><input id={fieldId("beforeAfterGroup")} value={values.beforeAfterGroup} onChange={(event) => change("beforeAfterGroup", event.target.value)} placeholder="Example: Oak removal 1" /></div>
         <div className="field"><label htmlFor={fieldId("beforeAfterRole")}>Pair position</label><select id={fieldId("beforeAfterRole")} value={values.beforeAfterRole} onChange={(event) => change("beforeAfterRole", event.target.value)}><option value="">Not paired</option><option value="before">Before</option><option value="after">After</option></select></div>

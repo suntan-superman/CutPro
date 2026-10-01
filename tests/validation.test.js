@@ -37,6 +37,23 @@ test("a complete estimate payload is normalized and accepted", () => {
   assert.equal(result.data.email, "maria@example.com");
 });
 
+test("property service additions are accepted by estimate validation", () => {
+  const result = validateEstimate({
+    submissionToken: token,
+    firstName: "Maria",
+    phone: "(661) 555-0123",
+    propertyAddress: "100 Oak Street",
+    city: "Bakersfield",
+    zip: "93301",
+    services: ["trash-hauling", "fence-building"],
+    urgency: "Flexible",
+    jobDescription: "Please clear the backyard and repair the fence.",
+    preferredContactMethod: "Phone",
+  });
+  assert.equal(result.valid, true);
+  assert.deepEqual(result.data.services, ["trash-hauling", "fence-building"]);
+});
+
 test("estimate validation returns field-specific errors", () => {
   const result = validateEstimate({ submissionToken: "bad", services: [], phone: "123", zip: "no" });
   assert.equal(result.valid, false);

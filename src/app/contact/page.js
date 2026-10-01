@@ -4,7 +4,7 @@ import { getBusinessSettings } from "@/lib/data";
 import ContactForm from "@/components/forms/ContactForm";
 import { PhoneIcon } from "@/components/ui/Icons";
 
-export const metadata = createMetadata({ title: "Contact", description: `Contact ${business.name} about tree service in Bakersfield.`, path: "/contact" });
+export const metadata = createMetadata({ title: "Contact", description: `Contact ${business.name} about property services in Bakersfield.`, path: "/contact" });
 
 export const dynamic = "force-dynamic";
 

@@ -50,7 +50,7 @@ export default async function HomePage() {
           <div className="hero-copy">
             <p className="eyebrow">Bakersfield tree service</p>
             <h1>Professional Tree Service in Bakersfield</h1>
-            <p className="hero-lead">Tree trimming, removal, stump grinding, and emergency tree service for homes and businesses throughout Bakersfield and surrounding areas.</p>
+            <p className="hero-lead">Tree care, trash hauling, and fence building for homes and businesses throughout Bakersfield and surrounding areas.</p>
             <div className="hero-actions">
               <Link className="button button-primary" href="/free-estimate">Get a Free Estimate <ArrowIcon className="size-5" /></Link>
               <a className="button button-ghost" href={business.phoneHref} data-phone-cta><PhoneIcon className="size-5" /> {business.phoneDisplay}</a>
@@ -59,7 +59,7 @@ export default async function HomePage() {
           </div>
           <div className="hero-visual">
             {primaryPhoto ? <figure className="hero-photo">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={primaryPhoto.public_url} alt={primaryPhoto.alt_text} /><figcaption>{primaryPhoto.caption || primaryPhoto.category}</figcaption></figure> : <MediaPlaceholder label="CutPro project photo pending" />}
-            <div className="hero-badge"><strong>4</strong><span>core tree<br />services</span></div>
+            <div className="hero-badge"><strong>{services.length}</strong><span>core property<br />services</span></div>
           </div>
         </div>
       </section>
@@ -78,7 +78,7 @@ export default async function HomePage() {
 
       <section className="section section-cream">
         <div className="shell">
-          <SectionHeading eyebrow="What we do" title="The right starting point for the tree in front of you." copy="Choose the service that best matches the job. If you are not sure, select Other on the estimate form and describe what you see." />
+          <SectionHeading eyebrow="What we do" title="The right starting point for the work in front of you." copy="Choose the service that best matches the job. If you are not sure, select Other on the estimate form and describe what you see." />
           <div className="service-grid">
             {services.map((service, index) => (
               <article className={`service-card service-${service.accent}`} key={service.slug}>

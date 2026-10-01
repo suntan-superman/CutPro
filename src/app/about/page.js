@@ -7,7 +7,7 @@ import { getCompanyContent, getPublicGallery } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = createMetadata({ title: "About", description: "Meet CUTPRO Tree Service, a locally owned Bakersfield company with more than 10 years of experience in tree trimming, removal, stump grinding, and emergency tree service.", path: "/about" });
+export const metadata = createMetadata({ title: "About", description: "Meet CUTPRO Tree Service, a locally owned Bakersfield company providing tree care, trash hauling, and fence building.", path: "/about" });
 
 export default async function AboutPage() {
   const [content, [teamPhoto]] = await Promise.all([getCompanyContent(), getPublicGallery({ teamPhoto: true, limit: 1 })]);

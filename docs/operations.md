@@ -33,7 +33,7 @@ Provision Gabe later only after explicit approval using the same two-part proces
 
 Authorized administrators can now use **Business settings → Administrator access** to invite another administrator by email or deactivate an existing portal account. Deactivation removes the `admin_users` authorization row; it does not delete the Supabase Auth identity. The interface prevents an administrator from deactivating themselves or the last active administrator.
 
-From an estimate or contact request's detail page, an authorized administrator can choose **Delete request**. The native confirmation warns that deletion is permanent. The server verifies admin access, removes the request's private `lead-photos` objects, and then deletes the `leads` row; malformed stored paths or storage failures fail closed and leave the request available for retry. This is separate from status/notes updates and is not available to anonymous or non-admin callers.
+From an estimate or contact request's detail page, an authorized administrator can choose **Delete request**. A branded in-page confirmation warns that deletion is permanent. The server verifies admin access, removes the request's private `lead-photos` objects, and then deletes the `leads` row; malformed stored paths or storage failures fail closed and leave the request available for retry. This is separate from status/notes updates and is not available to anonymous or non-admin callers.
 
 ### Admin session safety
 
@@ -74,7 +74,7 @@ Choose a written customer-data retention window before production. Delete expire
 ## Gallery workflow and first real photo batch
 
 1. Obtain CutPro's permission to publish the photographs; remove private details and confirm ownership. Use JPG, PNG, or WebP for Gallery (HEIC/HEIF are accepted only for private estimate attachments).
-2. Sign in at `/admin/login`, open Gallery, and select up to six photos. Check every preview, enter a useful photo description/caption, and choose category/service. Leave Publish now off while reviewing. Do not copy files into `/public` or edit source code.
+2. Sign in at `/admin/login`, open Gallery, and select up to six photos. Check every preview, enter a useful photo description/caption, and choose category/service. Leave Publish now off while reviewing. The Trash Hauling and Fence Building service options are available in the same Service selector. Do not copy replacement files into `/public` or edit source code.
 3. Upload through the form. The browser sends image bytes directly to the private Supabase staging bucket; CutPro receives only small JSON authorization/verification requests. Review each library card; multi-upload descriptions include file-name suffixes and can be edited individually. Save descriptive text, Featured/Published state, and Display order. Featured items sort ahead of other published items; lower Display order values sort first within that priority.
 4. For a Before/After pair, give both cards the same Pair name and set one Before and the other After. Publish both; feature them if they should be prioritized on the homepage. A complete pair appears in the homepage presentation.
 5. Refresh the public Gallery/homepage to verify the result without a source edit or rebuild. Unpublishing removes site presentation but does not make a public object URL private. Delete requires confirmation and archives/unpublishes the row while removing its storage object.

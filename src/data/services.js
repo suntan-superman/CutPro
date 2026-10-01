@@ -79,6 +79,56 @@ export const services = [
     ],
     accent: "red",
   },
+  {
+    slug: "trash-hauling",
+    name: "Trash Hauling",
+    eyebrow: "Clear the clutter. Reclaim the space.",
+    shortDescription:
+      "Convenient hauling for yard debris, bulky items, and property cleanouts that need a clear next step.",
+    description:
+      "Trash hauling starts with understanding what needs to go, where it is located, and what access the property allows. CutPro can review the volume and material mix before discussing the right hauling plan.",
+    reasons: [
+      "Yard debris or bulky items are taking up useful space",
+      "A cleanout or property project has created more material than you can handle",
+      "You need help loading and hauling unwanted items away",
+    ],
+    approach: [
+      "Describe the materials, approximate volume, and where they are located",
+      "Review driveway, gate, stair, and other access considerations",
+      "Confirm the requested scope and cleanup expectations before scheduling",
+    ],
+    accent: "lime",
+    defaultPhoto: {
+      public_url: "/service-images/trash-hauling.jpg",
+      alt_text: "CutPro crew loading bulky items into a hauling truck",
+      caption: "Trash hauling",
+    },
+  },
+  {
+    slug: "fence-building",
+    name: "Fence Building",
+    eyebrow: "Define the property. Build it right.",
+    shortDescription:
+      "Fence building and repair for privacy, property boundaries, access, and a more finished outdoor space.",
+    description:
+      "A useful fence plan depends on the property line, layout, materials, gates, existing posts, and the way you need the space to work. CutPro starts with the site and the result you want before defining the project.",
+    reasons: [
+      "A damaged or leaning fence needs repair or replacement",
+      "You want more privacy, security, or a clearer property boundary",
+      "A new gate or enclosure would make the property easier to use",
+    ],
+    approach: [
+      "Review the fence line, access, terrain, and existing structures",
+      "Discuss the desired height, material, gate layout, and finish",
+      "Confirm the scope and site details before an estimate is prepared",
+    ],
+    accent: "orange",
+    defaultPhoto: {
+      public_url: "/service-images/fence-building.jpg",
+      alt_text: "Finished wood fence along a Bakersfield property",
+      caption: "Fence building",
+    },
+  },
 ];
 
 export function getService(slug) {

@@ -11,7 +11,7 @@ export const business = {
   canonicalUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   tagline: "Professional Tree Care in Bakersfield & Surrounding Areas",
   summary:
-    "CUTPRO Tree Service provides tree trimming, tree removal, stump grinding, and emergency tree service in Bakersfield and surrounding areas.",
+    "CUTPRO Tree Service provides tree trimming, tree removal, stump grinding, emergency tree service, trash hauling, and fence building in Bakersfield and surrounding areas.",
   primaryCity: "Bakersfield",
   region: "CA",
   areaServed: ["Bakersfield", "Kern County"],

@@ -9,8 +9,8 @@ import { getPublicGallery } from "@/lib/data";
 export const dynamic = "force-dynamic";
 
 export const metadata = createMetadata({
-  title: "Tree Services",
-  description: "Explore tree trimming, tree removal, stump grinding, and emergency tree service from CutPro in Bakersfield.",
+  title: "Services",
+  description: "Explore tree care, trash hauling, and fence building services from CutPro in Bakersfield.",
   path: "/services",
 });
 
@@ -22,12 +22,12 @@ export default async function ServicesPage() {
   }
   return (
     <>
-      <header className="page-hero"><div className="shell"><p className="eyebrow">CutPro services</p><h1>Start with the work you need done.</h1><p>Four focused services, one simple way to send CutPro the site details and photos that matter.</p></div></header>
+      <header className="page-hero"><div className="shell"><p className="eyebrow">CutPro services</p><h1>Start with the work you need done.</h1><p>{services.length} focused services, one simple way to send CutPro the site details and photos that matter.</p></div></header>
       <section className="section">
         <div className="shell service-list">
           {services.map((service, index) => (
             <article className="service-row" key={service.slug}>
-              {photoByService.get(service.slug) ? <ServicePhoto item={photoByService.get(service.slug)} compact /> : <MediaPlaceholder label={`${service.name} project photo pending`} compact />}
+              {photoByService.get(service.slug) || service.defaultPhoto ? <ServicePhoto item={photoByService.get(service.slug) || service.defaultPhoto} compact /> : <MediaPlaceholder label={`${service.name} project photo pending`} compact />}
               <div><span className="service-number">0{index + 1}</span><p className="eyebrow">{service.eyebrow}</p><h2>{service.name}</h2><p>{service.description}</p><div className="inline-actions"><Link href={`/services/${service.slug}`} className="button button-dark">View service <ArrowIcon className="size-5" /></Link><Link className="text-link" href={`/free-estimate?service=${service.slug}`}>Request this service</Link></div></div>
             </article>
           ))}

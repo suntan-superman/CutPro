@@ -5,7 +5,7 @@ Updated: September 23, 2026
 ## Completed in this repository
 
 - Phase 1: isolated Git repository, JavaScript-only Next.js scaffold, Tailwind design system, centralized business/service/area/FAQ data, environment template, and managed-platform ADR.
-- Phase 2: responsive homepage, services index and four service pages, About, dynamic Gallery, Contact, Privacy, Terms, reusable navigation/footer/CTA components, mobile call bar, and honest media placeholders.
+- Phase 2: responsive homepage, services index and six service pages (including Trash Hauling and Fence Building), About, dynamic Gallery, Contact, Privacy, Terms, reusable navigation/footer/CTA components, mobile call bar, and honest media placeholders.
 - Phase 3: five-step mobile estimate form, previews/removal for six photos, defined HEIC strategy, client and server validation, honeypot/minimum-fill-time/rate-limit protection, optional Turnstile, idempotent persistent lead creation, private storage, owner notification, customer acknowledgement, and safe failure messages.
 - Phase 3B: explicitly provisioned Supabase login, server-side admin checks, dashboard, searchable/filterable lead manager, lead detail/photos/status/internal notes, gallery manager, before/after pairing, testimonial manager, limited business settings, logout, empty states, and destructive-action confirmation.
 - Phase 4: unique route metadata, canonicals, Open Graph data, LocalBusiness/Service/Breadcrumb/FAQ JSON-LD, robots, sitemap, internal links, and a substantive Bakersfield service-area page.

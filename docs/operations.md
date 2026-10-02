@@ -11,7 +11,7 @@ Resend handles outbound transactional email only. The verified sending domain is
 The server reads these environment variables:
 
 - `RESEND_API_KEY` — server-only Resend sending key. Use the narrowest sending permission available, rotate it in Resend, and update local `.env.local` plus the existing Netlify site's environment variables without printing the value.
-- `LEAD_NOTIFICATION_EMAIL` — temporary real owner mailbox for new-lead notifications; it is never hard-coded.
+- `LEAD_NOTIFICATION_EMAIL` — one or more temporary real owner mailboxes for new-lead notifications, separated by commas or semicolons (for example `owner@example.com,office@example.com`); it is never hard-coded. The addresses receive one owner notification together; invalid or empty recipient lists fail closed without attempting delivery.
 - `EMAIL_FROM` — the approved CutPro Tree Service display name and verified sending mailbox on `cutprotree.com`.
 - `EMAIL_REPLY_TO` — optional real receiving mailbox. Leave blank while CutPro has no mailbox hosting; later set it to a hosted address such as `estimates@cutprotree.com`.
 

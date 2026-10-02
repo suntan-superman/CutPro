@@ -7,6 +7,15 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+const EMAIL_ADDRESS_PATTERN = /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/;
+
+export function parseNotificationRecipients(value) {
+  const values = Array.isArray(value) ? value : String(value ?? "").split(/[;,]/);
+  const recipients = values.map((item) => String(item ?? "").trim()).filter(Boolean);
+  if (!recipients.length || recipients.some((item) => !EMAIL_ADDRESS_PATTERN.test(item))) return [];
+  return [...new Set(recipients)];
+}
+
 function detailRow(label, value) {
   if (!value) return "";
   const display = Array.isArray(value) ? value.join(", ") : value;
@@ -30,10 +39,10 @@ async function attemptEmail(resend, payload) {
 
 export async function sendLeadNotifications(lead, { resendClient, config = {}, brand } = {}) {
   const apiKey = config.apiKey;
-  const ownerEmail = config.ownerEmail;
+  const ownerEmails = parseNotificationRecipients(config.ownerEmails ?? config.ownerEmail);
   const from = config.from?.trim();
   const replyTo = config.replyTo?.trim();
-  if (!apiKey || !ownerEmail || !from || !resendClient) {
+  if (!apiKey || !ownerEmails.length || !from || !resendClient) {
     return {
       sent: false,
       reason: "not_configured",
@@ -64,7 +73,7 @@ export async function sendLeadNotifications(lead, { resendClient, config = {}, b
 
   const ownerResult = await attemptEmail(resendClient, {
     ...common,
-    to: ownerEmail,
+    to: ownerEmails.length === 1 ? ownerEmails[0] : ownerEmails,
     subject: `New CutPro estimate request ${lead.reference}: ${lead.first_name} ${lead.last_name}`.trim(),
     html: `<h1>CutPro Tree Service — New Estimate Request</h1><table>${rows}</table><p><a href="${escapeHtml(adminLeadUrl)}">Open this lead in the CutPro admin portal</a> to manage follow-up and view private photos.</p>`,
   });

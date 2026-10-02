@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { sendLeadNotifications } from "../src/lib/notificationCore.js";
+import { parseNotificationRecipients, sendLeadNotifications } from "../src/lib/notificationCore.js";
 
 const lead = {
   id: "qa-lead-id",
@@ -74,6 +74,22 @@ test("owner and customer messages use the verified sender, optional Reply-To, an
   assert.match(resend.calls[1].html, /This confirms receipt only/);
   assert.match(resend.calls[1].html, /cutprotree\.com/);
   assert.match(resend.calls[1].html, /\(213\) 466-1363/);
+});
+
+test("owner notifications support comma- or semicolon-separated recipients", async () => {
+  assert.deepEqual(parseNotificationRecipients(" owner@example.com,office@example.com;owner@example.com "), ["owner@example.com", "office@example.com"]);
+  const resend = fakeResend();
+  const result = await sendLeadNotifications(lead, { resendClient: resend, config: { ...config, ownerEmail: "owner@example.com, office@example.com" }, brand });
+  assert.equal(result.owner.sent, true);
+  assert.deepEqual(resend.calls[0].to, ["owner@example.com", "office@example.com"]);
+});
+
+test("invalid owner recipient lists fail closed", async () => {
+  assert.deepEqual(parseNotificationRecipients("owner@example.com,not-an-email"), []);
+  const resend = fakeResend();
+  const result = await sendLeadNotifications(lead, { resendClient: resend, config: { ...config, ownerEmail: "owner@example.com,not-an-email" }, brand });
+  assert.equal(result.reason, "not_configured");
+  assert.equal(resend.calls.length, 0);
 });
 
 test("owner failure does not prevent the customer acknowledgement attempt", async () => {

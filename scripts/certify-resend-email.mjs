@@ -4,20 +4,22 @@ import nextEnv from "@next/env";
 import { createClient } from "@supabase/supabase-js";
 import { chromium } from "playwright";
 import sharp from "sharp";
+import { parseNotificationRecipients } from "../src/lib/notificationCore.js";
 
 // Explicit opt-in certification. This sends two clearly synthetic messages to
 // RESEND_QA_CUSTOMER_EMAIL (or the configured owner destination) and creates one
 // retained QA lead in the existing Supabase project.
 nextEnv.loadEnvConfig(process.cwd(), true, { info() {}, error() {} });
 const origin = process.env.CUTPRO_QA_ORIGIN || "http://127.0.0.1:3014";
-const customerEmail = process.env.RESEND_QA_CUSTOMER_EMAIL || process.env.LEAD_NOTIFICATION_EMAIL;
+const configuredOwnerEmails = parseNotificationRecipients(process.env.LEAD_NOTIFICATION_EMAIL);
+const customerEmail = process.env.RESEND_QA_CUSTOMER_EMAIL || configuredOwnerEmails[0];
 const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const secretKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 const apiKey = process.env.RESEND_API_KEY;
 const from = process.env.EMAIL_FROM;
 const replyTo = process.env.EMAIL_REPLY_TO;
 const marker = `CUTPRO RESEND CERTIFICATION TEST — NOT A CUSTOMER LEAD — ${randomUUID()}`;
-assert.ok(apiKey && customerEmail && from, "Set Resend, owner destination, and sender environment variables first.");
+assert.ok(apiKey && configuredOwnerEmails.length && customerEmail && from, "Set Resend, owner destination, and sender environment variables first.");
 const expectedSenderMailbox = ["notifications", "@", "cutprotree", ".com"].join("");
 const expectedFrom = `CutPro Tree Service <${expectedSenderMailbox}>`;
 assert.equal(from, expectedFrom, "EMAIL_FROM must use the verified CutPro sender.");

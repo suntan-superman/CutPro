@@ -30,7 +30,7 @@ Copy `.env.example` to `.env.local` only if the local file does not already exis
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: Supabase project URL and browser-safe publishable key
 - `SUPABASE_SECRET_KEY`: server-only database/storage secret key (never expose it in client code)
 - `RESEND_API_KEY`: server-only Resend API key with sending permission; never expose or commit it
-- `LEAD_NOTIFICATION_EMAIL`: owner destination for new-lead notifications (environment-configured; never hard-code an inbox)
+- `LEAD_NOTIFICATION_EMAIL`: one or more owner destinations for new-lead notifications, separated by commas or semicolons (for example `owner@example.com,office@example.com`; environment-configured; never hard-code an inbox)
 - `EMAIL_FROM`: authenticated CutPro Tree Service sender identity on the verified `cutprotree.com` domain
 - `EMAIL_REPLY_TO`: optional real mailbox for replies; leave blank until a mailbox is available
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID`: optional GA4 measurement ID
